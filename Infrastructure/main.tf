@@ -50,8 +50,14 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   }
 }
 
-resource "azurerm_cosmosdb_sql_database" "movemate_database" {
-  name                = "movemate-db"
+resource "azurerm_cosmosdb_sql_database" "movemate_prod_database" {
+  name                = "movemate-prod"
+  resource_group_name = azurerm_resource_group.resource_group.name
+  account_name        = azurerm_cosmosdb_account.cosmosdb_account.name
+}
+
+resource "azurerm_cosmosdb_sql_database" "movemate_test_database" {
+  name                = "movemate-test"
   resource_group_name = azurerm_resource_group.resource_group.name
   account_name        = azurerm_cosmosdb_account.cosmosdb_account.name
 }
