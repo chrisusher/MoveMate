@@ -18,12 +18,12 @@ namespace ChrisUsher.MoveMate.API.Functions
             _stampDutyService = stampDutyService;
         }
 
-        [OpenApiOperation(operationId: "CalculateStampDuty", Summary = "Calculates the Stamp Duty for a Property")]
+        [OpenApiOperation(operationId: "CalculateStampDuty", tags: new[] { "Property Calculations" }, Summary = "Calculates the Stamp Duty for a Property")]
         [OpenApiRequestBody("application/json", typeof(StampDutyRequest))]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(StampDutyResponse))]
         [OpenApiParameter("propertyId")]
         [Function("CalculateStampDuty")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "Properties/{propertyId}/Calculations/StampDuty")] HttpRequestData request,
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Properties/{propertyId}/Calculations/StampDuty")] HttpRequestData request,
             int propertyId)
         {
             HttpResponseData response;
