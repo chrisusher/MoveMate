@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
-using ChrisUsher.MoveMate.Shared.StampDuty;
+using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
 
 namespace ChrisUsher.MoveMate.API.Functions
 {

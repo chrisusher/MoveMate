@@ -1,4 +1,4 @@
-namespace ChrisUsher.MoveMate.Shared.StampDuty
+namespace ChrisUsher.MoveMate.Shared.DTOs.StampDuty
 {
     public class StampDutyBreakdown
     {

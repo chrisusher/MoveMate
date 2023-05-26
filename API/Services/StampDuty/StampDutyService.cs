@@ -1,4 +1,4 @@
-using ChrisUsher.MoveMate.Shared.StampDuty;
+using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
 
 namespace ChrisUsher.MoveMate.API.Services.StampDuty
 {
