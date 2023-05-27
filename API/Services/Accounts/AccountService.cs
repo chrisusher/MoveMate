@@ -1,5 +1,5 @@
-using ChrisUsher.MoveMate.API.Database.Accounts;
 using ChrisUsher.MoveMate.API.Repositories;
+using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 
 namespace ChrisUsher.MoveMate.API.Services.Accounts
 {
@@ -12,14 +12,29 @@ namespace ChrisUsher.MoveMate.API.Services.Accounts
             _accountRepository = repository;
         }
 
-        public async Task<AccountTable> GetAccountAsync(Guid accountId)
+        public async Task<Account> GetAccountAsync(Guid accountId)
         {
-            return await _accountRepository.GetAccount(accountId);
+            var account = await _accountRepository.GetAccountAsync(accountId);
+
+            return account.ToAccount();
         }
 
-        public async Task<AccountTable> CreateAccountAsync(AccountTable account)
+        public async Task<Account> CreateAccountAsync(CreateAccountRequest request)
         {
-            return await _accountRepository.CreateAccount(account);
+            var account = request.ToAccount();
+
+            var table = await _accountRepository.CreateAccountAsync(account);
+            
+            return table.ToAccount();
+        }
+
+        public async Task<Account> UpdateAccountAsync(Guid accountId, UpdateAccountRequest updateRequest)
+        {
+            var account = updateRequest.ToAccount(accountId);
+
+            var table = await _accountRepository.UpdateAccountAsync(account);
+            
+            return table.ToAccount();
         }
     }
 }

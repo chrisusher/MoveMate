@@ -1,5 +1,6 @@
 using ChrisUsher.MoveMate.API.Database;
 using ChrisUsher.MoveMate.API.Database.Accounts;
+using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChrisUsher.MoveMate.API.Repositories
@@ -13,19 +14,39 @@ namespace ChrisUsher.MoveMate.API.Repositories
             _databaseContext = databaseContext;
         }
 
-        public async Task<AccountTable> GetAccount(Guid accountId)
+        public async Task<AccountTable> GetAccountAsync(Guid accountId)
         {
             return await _databaseContext.Accounts
                 .FirstOrDefaultAsync(x => x.AccountId == accountId);
         }
 
-        public async Task<AccountTable> CreateAccount(AccountTable account)
+        public async Task<AccountTable> CreateAccountAsync(Account account)
         {
-            _databaseContext.Accounts.Add(account);
+            var accountTable = new AccountTable
+            {
+                Email = account.Email,
+                EstimatedSaleDate = account.EstimatedSaleDate
+            };
+            _databaseContext.Accounts.Add(accountTable);
 
             await _databaseContext.SaveChangesAsync();
 
-            return account;
+            return accountTable;
+        }
+
+        public async Task<AccountTable> UpdateAccountAsync(Account account)
+        {
+            var accountTable = await _databaseContext.Accounts.FirstAsync(x => x.AccountId == account.AccountId);
+
+            accountTable.Email = account.Email;
+            accountTable.EstimatedSaleDate = account.EstimatedSaleDate;
+            accountTable.IsDeleted = account.IsDeleted;
+
+            _databaseContext.Accounts.Update(accountTable);
+
+            await _databaseContext.SaveChangesAsync();
+
+            return accountTable;
         }
     }
 }
