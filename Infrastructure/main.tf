@@ -61,3 +61,22 @@ resource "azurerm_cosmosdb_sql_database" "movemate_test_database" {
   resource_group_name = azurerm_resource_group.resource_group.name
   account_name        = azurerm_cosmosdb_account.cosmosdb_account.name
 }
+
+resource "azurerm_storage_account" "storageAccount" {
+  name                              = "movematebc75"
+  resource_group_name               = azurerm_resource_group.resource_group.name
+  location                          = azurerm_resource_group.resource_group.location
+  account_tier                      = "Standard"
+  account_replication_type          = "LRS"
+  account_kind                      = "Storage"
+  default_to_oauth_authentication   = true
+  cross_tenant_replication_enabled  = false
+}
+
+resource "azurerm_service_plan" "movemateServicePlan" {
+  name                  = "ASP-movemate-b7fc"
+  resource_group_name   = azurerm_resource_group.resource_group.name
+  location              = azurerm_resource_group.resource_group.location
+  os_type               = "Linux"
+  sku_name              = "Y1"
+}
