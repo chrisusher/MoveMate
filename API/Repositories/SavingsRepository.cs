@@ -14,10 +14,18 @@ public class SavingsRepository
         _databaseContext = databaseContext;
     }
 
-    public async Task<SavingsTable> GetSavingsAccount(Guid accountId, Guid savingsId)
+    public async Task<SavingsTable> GetSavingsAccountAsync(Guid accountId, Guid savingsId)
     {
         return await _databaseContext.Savings
             .FirstOrDefaultAsync(x => x.AccountId == accountId && x.SavingsId == savingsId);
+    }
+
+    public async Task<List<SavingsTable>> GetSavingsAsync(Guid accountId)
+    {
+        return await _databaseContext.Savings
+            .Where(x => x.AccountId == accountId
+                        && !x.IsDeleted)
+            .ToListAsync();
     }
     
     public async Task<SavingsTable> CreateSavingsAccountAsync(Guid accountId, SavingsAccount account)

@@ -23,7 +23,7 @@ public class SavingsService
 
     public async Task<SavingsAccount> GetSavingsAccountAsync(Guid accountId, Guid savingsId)
     {
-        var account = await _savingsRepo.GetSavingsAccount(accountId, savingsId);
+        var account = await _savingsRepo.GetSavingsAccountAsync(accountId, savingsId);
 
         if(account == null)
         {
@@ -31,6 +31,15 @@ public class SavingsService
         }
 
         return account.ToSavingsAccount();
+    }
+    
+    public async Task<List<SavingsAccount>> GetSavingsAccountsAsync(Guid accountId)
+    {
+        var accounts = await _savingsRepo.GetSavingsAsync(accountId);
+
+        return accounts
+            .Select(x => x.ToSavingsAccount())
+            .ToList();
     }
 
     public async Task<SavingsAccount> UpdateSavingsAccountAsync(Guid accountId, Guid savingsId, UpdateSavingsAccountRequest request)

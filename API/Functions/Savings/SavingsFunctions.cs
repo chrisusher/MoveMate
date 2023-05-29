@@ -46,6 +46,30 @@ public class SavingsFunctions
         return response;
     }
     
+    [OpenApiOperation(operationId: "GetSavingsAccounts", tags: new[] { "Savings" }, Summary = "")]
+    [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(List<SavingsAccount>))]
+    [OpenApiParameter("accountId")]
+    [Function("GetSavingsAccounts")]
+    public async Task<HttpResponseData> GetSavingsAccounts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings")] HttpRequestData request,
+        Guid accountId)
+    {
+        HttpResponseData response;
+
+        try
+        {
+            response = request.CreateResponse(HttpStatusCode.OK);
+            var responseBody = await _savingsService.GetSavingsAccountsAsync(accountId);
+
+            await response.WriteAsJsonAsync(responseBody);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("HHmmss"))), ex, ex.Message);
+            throw;
+        }
+        return response;
+    }
+    
     [OpenApiOperation(operationId: "GetSavingsAccount", tags: new[] { "Savings" }, Summary = "")]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsAccount))]
     [OpenApiParameter("accountId")]
@@ -78,7 +102,7 @@ public class SavingsFunctions
         }
         return response;
     }
-    
+
     [OpenApiOperation(operationId: "UpdateSavingsAccount", tags: new[] { "Savings" }, Summary = "")]
     [OpenApiRequestBody("application/json", typeof(UpdateSavingsAccountRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsAccount))]
