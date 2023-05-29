@@ -38,7 +38,7 @@ public class SavingsRepository
             SavingsRate = account.SavingsRate,
             MonthlySavingsAmount = account.MonthlySavingsAmount
         };
-        _databaseContext.Savings.Add(savingsTable);
+        await _databaseContext.Savings.AddAsync(savingsTable);
 
         await _databaseContext.SaveChangesAsync();
 

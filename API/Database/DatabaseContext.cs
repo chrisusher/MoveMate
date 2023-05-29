@@ -30,15 +30,9 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<SavingsTable>()
             .ToContainer("Savings")
             .HasPartitionKey("AccountId");
-
-        modelBuilder.Entity<CurrentPropertyTable>()
-            .ToContainer("CurrentProperty")
-            .HasPartitionKey("PropertyId");
     }
 
     public DbSet<AccountTable> Accounts { get; set; }
-
-    public DbSet<CurrentPropertyTable> CurrentProperty { get; set; }
 
     public DbSet<PropertyTable> Properties { get; set; }
 
