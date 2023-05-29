@@ -1,9 +1,8 @@
 using System.Net;
-using System.Text.Json;
 using ChrisUsher.MoveMate.API.Services.Accounts;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 
-namespace ChrisUsher.MoveMate.API.Functions
+namespace ChrisUsher.MoveMate.API.Functions.Accounts
 {
     public class AccountFunctions
     {
@@ -38,7 +37,7 @@ namespace ChrisUsher.MoveMate.API.Functions
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("yyyyMMddHHmmss"))), ex, ex.Message);
+                _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("HHmmss"))), ex, ex.Message);
                 throw;
             }
 
@@ -63,7 +62,7 @@ namespace ChrisUsher.MoveMate.API.Functions
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("yyyyMMddHHmmss"))), ex, ex.Message);
+                _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("HHmmss"))), ex, ex.Message);
                 throw;
             }
 
@@ -92,7 +91,7 @@ namespace ChrisUsher.MoveMate.API.Functions
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("yyyyMMddHHmmss"))), ex, ex.Message);
+                _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("HHmmss"))), ex, ex.Message);
                 throw;
             }
 
