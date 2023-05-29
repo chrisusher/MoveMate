@@ -7,4 +7,19 @@ public class UpdatePropertyRequest : CreatePropertyRequest
     
     [JsonPropertyName("created")]
     public DateTime Created { get; set; }
+
+    public Property ToProperty(Guid accountId, Guid propertyId)
+    {
+        return new Property
+        {
+            AccountId = accountId,
+            PropertyId = propertyId,
+            Created = Created,
+            IsDeleted = IsDeleted,
+            MaxValue = MaxValue,
+            MinValue = MinValue,
+            Name = Name,
+            PropertyType = PropertyType
+        };
+    }
 }
