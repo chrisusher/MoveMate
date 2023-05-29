@@ -1,5 +1,6 @@
 ﻿using ChrisUsher.MoveMate.API.Repositories;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
+using ChrisUsher.MoveMate.Shared.Enums;
 
 namespace ChrisUsher.MoveMate.API.Services.Properties;
 
@@ -33,9 +34,9 @@ public class PropertyService
         return propertyTable.ToProperty();
     }
 
-    public async Task<List<Property>> GetPropertiesAsync(Guid accountId)
+    public async Task<List<Property>> GetPropertiesAsync(Guid accountId, PropertyType propertyType)
     {
-        var properties = await _propertyRepo.GetPropertiesAsync(accountId);
+        var properties = await _propertyRepo.GetPropertiesAsync(accountId, propertyType);
 
         return properties
             .Select(x => x.ToProperty())

@@ -37,12 +37,12 @@ public class PropertyRepository
         return await _databaseContext.Properties.FirstOrDefaultAsync(x => x.AccountId == accountId && x.PropertyId == propertyId);
     }
 
-    public async Task<List<PropertyTable>> GetPropertiesAsync(Guid accountId)
+    public async Task<List<PropertyTable>> GetPropertiesAsync(Guid accountId, PropertyType propertyType)
     {
         return await _databaseContext.Properties
             .Where(x => x.AccountId == accountId
                 && !x.IsDeleted
-                && x.PropertyType == PropertyType.ToPurchase)
+                && x.PropertyType == propertyType)
             .ToListAsync();
     }
 

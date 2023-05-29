@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
+using ChrisUsher.MoveMate.Shared.Enums;
+using Microsoft.OpenApi.Models;
 
 namespace ChrisUsher.MoveMate.API.Functions.Properties;
 
@@ -20,7 +22,8 @@ public class PropertyFunctions
     [OpenApiOperation(operationId: "CreateProperty", tags: new[] { "Properties" }, Summary = "")]
     [OpenApiRequestBody("application/json", typeof(CreatePropertyRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Property))]
-    [OpenApiParameter("accountId")]
+    [OpenApiParameter(name: "accountId", 
+In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
     [Function("CreateProperty")]
     public async Task<HttpResponseData> CreateProperty([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Properties")] HttpRequestData request,
         Guid accountId)
@@ -48,17 +51,27 @@ public class PropertyFunctions
 
     [OpenApiOperation(operationId: "GetProperties", tags: new[] { "Properties" }, Summary = "")]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(List<Property>))]
-    [OpenApiParameter("accountId")]
+    [OpenApiParameter(name: "accountId", 
+In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
+    [OpenApiParameter(name: "propertyType", In = ParameterLocation.Query, Type = typeof(PropertyType))]
     [Function("GetProperties")]
     public async Task<HttpResponseData> GetProperties([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Properties")] HttpRequestData request,
-        Guid accountId)
+        Guid accountId,
+        string propertyType)
     {
         HttpResponseData response;
 
         try
         {
+            var propertyTypeEnum = PropertyType.ToPurchase;
+
+            if (!string.IsNullOrEmpty(propertyType))
+            {
+                propertyTypeEnum = Enum.Parse<PropertyType>(propertyType, true);
+            }
+
             response = request.CreateResponse(HttpStatusCode.OK);
-            var responseBody = await _propertyService.GetPropertiesAsync(accountId);
+            var responseBody = await _propertyService.GetPropertiesAsync(accountId, propertyTypeEnum);
 
             await response.WriteAsJsonAsync(responseBody);
         }
@@ -72,8 +85,10 @@ public class PropertyFunctions
     
     [OpenApiOperation(operationId: "GetProperty", tags: new[] { "Properties" }, Summary = "")]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Property))]
-    [OpenApiParameter("accountId")]
-    [OpenApiParameter("propertyId")]
+    [OpenApiParameter(name: "accountId", 
+In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
+    [OpenApiParameter(name: "propertyId", 
+In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
     [Function("GetProperty")]
     public async Task<HttpResponseData> GetProperty([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Properties/{propertyId}")] HttpRequestData request,
         Guid accountId,
@@ -106,8 +121,10 @@ public class PropertyFunctions
     [OpenApiOperation(operationId: "UpdateProperty", tags: new[] { "Properties" }, Summary = "")]
     [OpenApiRequestBody("application/json", typeof(UpdatePropertyRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Property))]
-    [OpenApiParameter("accountId")]
-    [OpenApiParameter("propertyId")]
+    [OpenApiParameter(name: "accountId", 
+In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
+    [OpenApiParameter(name: "propertyId", 
+In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
     [Function("UpdateProperty")]
     public async Task<HttpResponseData> UpdateProperty([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}/Properties/{propertyId}")] HttpRequestData request,
         Guid accountId,
