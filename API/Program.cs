@@ -1,13 +1,14 @@
-using ChrisUsher.MoveMate.API.Database;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ChrisUsher.MoveMate.API.Services.StampDuty;
 using System.Text.Json.Serialization;
+using ChrisUsher.MoveMate.API.Database;
 using ChrisUsher.MoveMate.API.Repositories;
 using ChrisUsher.MoveMate.API.Services.Accounts;
+using ChrisUsher.MoveMate.API.Services.Savings;
+using ChrisUsher.MoveMate.API.Services.StampDuty;
 
 var config = new ConfigurationBuilder()
 #if DEBUG
@@ -45,6 +46,8 @@ var host = new HostBuilder()
         services.AddSingleton<StampDutyService>();
         services.AddSingleton<AccountRepository>();
         services.AddSingleton<AccountService>();
+        services.AddSingleton<SavingsRepository>();
+        services.AddSingleton<SavingsService>();
     })
     .Build();
 

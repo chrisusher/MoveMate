@@ -40,7 +40,7 @@ namespace ChrisUsher.MoveMate.API.Functions
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("yyyyMMddHHmmss"))), ex, ex.Message);
+                _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("HHmmss"))), ex, ex.Message);
                 throw;
             }
 

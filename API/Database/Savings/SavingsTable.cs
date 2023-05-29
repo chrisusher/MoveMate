@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 
 namespace ChrisUsher.MoveMate.API.Database.Savings
 {
@@ -11,12 +12,32 @@ namespace ChrisUsher.MoveMate.API.Database.Savings
 
         public string Name { get; set; }
 
-        public DateTime Created { get; set; }
+        public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public bool IsDeleted { get; set; }
 
         public List<AccountBalance> Balances { get; set; } = new List<AccountBalance>();
 
         public double MonthlySavingsAmount { get; set; }
+        
+        public double SavingsRate { get; set; }
+        
+        public double InitialBalance { get; set; }
+
+        public SavingsAccount ToSavingsAccount()
+        {
+            return new SavingsAccount
+            {
+                AccountId = AccountId,
+                SavingsId = SavingsId,
+                Name = Name,
+                InitialBalance = InitialBalance,
+                MonthlySavingsAmount = MonthlySavingsAmount,
+                SavingsRate = SavingsRate,
+                IsDeleted = IsDeleted,
+                Created = Created,
+                Balances = Balances
+            };
+        }
     }
 }
