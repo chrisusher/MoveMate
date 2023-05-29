@@ -1,4 +1,4 @@
-namespace ChrisUsher.MoveMate.API.Database.Savings
+namespace ChrisUsher.MoveMate.Shared.DTOs.Savings
 {
     public class AccountBalance
     {
