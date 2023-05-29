@@ -13,6 +13,7 @@ public class CreatePropertyRequest
     [JsonPropertyName("minValue")]
     public double MinValue { get; set; }
     
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("propertyType")]
     public PropertyType PropertyType { get; set; } = PropertyType.ToPurchase;
 

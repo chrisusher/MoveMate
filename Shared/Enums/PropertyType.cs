@@ -2,7 +2,7 @@
 
 namespace ChrisUsher.MoveMate.Shared.Enums;
 
-[JsonConverter(typeof(StringEnumConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
 public enum PropertyType
 {
     ToPurchase = 0,

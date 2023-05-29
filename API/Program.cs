@@ -9,6 +9,7 @@ using ChrisUsher.MoveMate.API.Repositories;
 using ChrisUsher.MoveMate.API.Services.Accounts;
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
+using ChrisUsher.MoveMate.API.Services.Properties;
 
 var config = new ConfigurationBuilder()
 #if DEBUG
@@ -48,6 +49,8 @@ var host = new HostBuilder()
         services.AddSingleton<AccountService>();
         services.AddSingleton<SavingsRepository>();
         services.AddSingleton<SavingsService>();
+        services.AddSingleton<PropertyRepository>();
+        services.AddSingleton<PropertyService>();
     })
     .Build();
 
