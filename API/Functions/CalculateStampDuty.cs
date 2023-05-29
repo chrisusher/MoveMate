@@ -1,7 +1,7 @@
 using System.Net;
-using System.Text.Json;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
+using Microsoft.OpenApi.Models;
 
 namespace ChrisUsher.MoveMate.API.Functions
 {
@@ -21,7 +21,7 @@ namespace ChrisUsher.MoveMate.API.Functions
         [OpenApiOperation(operationId: "CalculateStampDuty", tags: new[] { "Property Calculations" }, Summary = "Calculates the Stamp Duty for a Property")]
         [OpenApiRequestBody("application/json", typeof(StampDutyRequest))]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(StampDutyResponse))]
-        [OpenApiParameter("propertyId")]
+        [OpenApiParameter(name: "propertyId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
         [Function("CalculateStampDuty")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Properties/{propertyId}/Calculations/StampDuty")] HttpRequestData request,
             int propertyId)

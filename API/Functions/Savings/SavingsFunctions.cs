@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
+using Microsoft.OpenApi.Models;
 
 namespace ChrisUsher.MoveMate.API.Functions.Savings;
 
@@ -20,7 +21,7 @@ public class SavingsFunctions
     [OpenApiOperation(operationId: "CreateSavingsAccount", tags: new[] { "Savings" }, Summary = "")]
     [OpenApiRequestBody("application/json", typeof(CreateSavingsAccountRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsAccount))]
-    [OpenApiParameter("accountId")]
+    [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("CreateSavingsAccount")]
     public async Task<HttpResponseData> CreateSavingsAccount([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings")] HttpRequestData request,
         Guid accountId)
@@ -48,7 +49,7 @@ public class SavingsFunctions
     
     [OpenApiOperation(operationId: "GetSavingsAccounts", tags: new[] { "Savings" }, Summary = "")]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(List<SavingsAccount>))]
-    [OpenApiParameter("accountId")]
+    [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetSavingsAccounts")]
     public async Task<HttpResponseData> GetSavingsAccounts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings")] HttpRequestData request,
         Guid accountId)
@@ -72,8 +73,8 @@ public class SavingsFunctions
     
     [OpenApiOperation(operationId: "GetSavingsAccount", tags: new[] { "Savings" }, Summary = "")]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsAccount))]
-    [OpenApiParameter("accountId")]
-    [OpenApiParameter("savingsId")]
+    [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
+    [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetSavingsAccount")]
     public async Task<HttpResponseData> GetSavingsAccount([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}")] HttpRequestData request,
         Guid accountId,
@@ -106,8 +107,8 @@ public class SavingsFunctions
     [OpenApiOperation(operationId: "UpdateSavingsAccount", tags: new[] { "Savings" }, Summary = "")]
     [OpenApiRequestBody("application/json", typeof(UpdateSavingsAccountRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsAccount))]
-    [OpenApiParameter("accountId")]
-    [OpenApiParameter("savingsId")]
+    [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
+    [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("UpdateSavingsAccount")]
     public async Task<HttpResponseData> UpdateAccount([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}/Savings/{savingsId}")] HttpRequestData request,
         Guid accountId,

@@ -27,7 +27,7 @@ namespace ChrisUsher.MoveMate.API.Repositories
                 Email = account.Email,
                 EstimatedSaleDate = account.EstimatedSaleDate
             };
-            _databaseContext.Accounts.Add(accountTable);
+            await _databaseContext.Accounts.AddAsync(accountTable);
 
             await _databaseContext.SaveChangesAsync();
 

@@ -1,6 +1,7 @@
 using System.Net;
 using ChrisUsher.MoveMate.API.Services.Accounts;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
+using Microsoft.OpenApi.Models;
 
 namespace ChrisUsher.MoveMate.API.Functions.Accounts
 {
@@ -46,7 +47,7 @@ namespace ChrisUsher.MoveMate.API.Functions.Accounts
 
         [OpenApiOperation(operationId: "GetAccount", tags: new[] { "Accounts" }, Summary = "")]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Account))]
-        [OpenApiParameter("accountId")]
+        [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
         [Function("GetAccount")]
         public async Task<HttpResponseData> GetAccount([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}")] HttpRequestData request,
             Guid accountId)
@@ -72,7 +73,7 @@ namespace ChrisUsher.MoveMate.API.Functions.Accounts
         [OpenApiOperation(operationId: "UpdateAccount", tags: new[] { "Accounts" }, Summary = "")]
         [OpenApiRequestBody("application/json", typeof(UpdateAccountRequest))]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Account))]
-        [OpenApiParameter("accountId")]
+        [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
         [Function("UpdateAccount")]
         public async Task<HttpResponseData> UpdateAccount([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}")] HttpRequestData request,
             Guid accountId)
