@@ -8,6 +8,9 @@ public class UpdateSavingsAccountRequest : CreateSavingsAccountRequest
     [JsonPropertyName("isDeleted")]
     public bool IsDeleted { get; set; }
 
+    [JsonPropertyName("balances")]
+    public List<AccountBalance> Balances { get; set; }
+
     public SavingsAccount ToSavingsAccount(Guid accountId, Guid savingsId)
     {
         return new SavingsAccount
@@ -19,6 +22,8 @@ public class UpdateSavingsAccountRequest : CreateSavingsAccountRequest
             IsDeleted = IsDeleted,
             InitialBalance = InitialBalance,
             MonthlySavingsAmount = MonthlySavingsAmount,
+            Balances = Balances,
+            Fluctuations = Fluctuations,
             SavingsRate = SavingsRate
         };
     }
