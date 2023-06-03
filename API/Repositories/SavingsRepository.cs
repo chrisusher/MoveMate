@@ -36,7 +36,8 @@ public class SavingsRepository
             Name = account.Name,
             InitialBalance = account.InitialBalance,
             SavingsRate = account.SavingsRate,
-            MonthlySavingsAmount = account.MonthlySavingsAmount
+            MonthlySavingsAmount = account.MonthlySavingsAmount,
+            Fluctuations = account.Fluctuations
         };
         await _databaseContext.Savings.AddAsync(savingsTable);
 
@@ -54,6 +55,8 @@ public class SavingsRepository
         accountTable.MonthlySavingsAmount = account.MonthlySavingsAmount;
         accountTable.IsDeleted = account.IsDeleted;
         accountTable.Name = account.Name;
+        accountTable.Balances = account.Balances;
+        accountTable.Fluctuations = account.Fluctuations;
 
         _databaseContext.Savings.Update(accountTable);
 

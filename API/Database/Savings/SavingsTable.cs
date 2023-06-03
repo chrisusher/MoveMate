@@ -18,10 +18,12 @@ namespace ChrisUsher.MoveMate.API.Database.Savings
 
         public List<AccountBalance> Balances { get; set; } = new List<AccountBalance>();
 
+        public SavingFluctuation Fluctuations { get; set; }
+
         public double MonthlySavingsAmount { get; set; }
-        
+
         public double SavingsRate { get; set; }
-        
+
         public double InitialBalance { get; set; }
 
         public SavingsAccount ToSavingsAccount()
@@ -36,7 +38,8 @@ namespace ChrisUsher.MoveMate.API.Database.Savings
                 SavingsRate = SavingsRate,
                 IsDeleted = IsDeleted,
                 Created = Created,
-                Balances = Balances
+                Balances = Balances,
+                Fluctuations = Fluctuations
             };
         }
     }
