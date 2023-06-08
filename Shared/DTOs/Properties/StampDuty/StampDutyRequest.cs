@@ -12,8 +12,5 @@ namespace ChrisUsher.MoveMate.Shared.DTOs.StampDuty
 
         [JsonPropertyName("additionalProperty")]
         public bool AdditionalProperty { get; set; }
-
-        [JsonPropertyName("purchasePrice")]
-        public double PurchasePrice { get; set; }
     }
 }
