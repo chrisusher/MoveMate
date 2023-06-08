@@ -25,14 +25,11 @@ public class SavingsService
     {
         var account = await _savingsRepo.GetSavingsAccountAsync(accountId, savingsId);
 
-        if(account == null)
-        {
-            throw new DataNotFoundException($"No Savings Account found in Account '{accountId}' with Savings Id '{savingsId}'");
-        }
-
-        return account.ToSavingsAccount();
+        return account == null
+            ? throw new DataNotFoundException($"No Savings Account found in Account '{accountId}' with Savings Id '{savingsId}'")
+            : account.ToSavingsAccount();
     }
-    
+
     public async Task<List<SavingsAccount>> GetSavingsAccountsAsync(Guid accountId)
     {
         var accounts = await _savingsRepo.GetSavingsAsync(accountId);

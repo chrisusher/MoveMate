@@ -26,12 +26,9 @@ public class PropertyService
     {
         var propertyTable = await _propertyRepo.GetPropertyAsync(accountId, propertyId);
 
-        if (propertyTable == null)
-        {
-            throw new DataNotFoundException($"No Property found in Account '{accountId}' with Property Id '{propertyId}'");
-        }
-
-        return propertyTable.ToProperty();
+        return propertyTable == null
+            ? throw new DataNotFoundException($"No Property found in Account '{accountId}' with Property Id '{propertyId}'")
+            : propertyTable.ToProperty();
     }
 
     public async Task<List<Property>> GetPropertiesAsync(Guid accountId, PropertyType propertyType)
