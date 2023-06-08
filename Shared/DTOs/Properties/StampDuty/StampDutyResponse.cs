@@ -3,10 +3,13 @@ namespace ChrisUsher.MoveMate.Shared.DTOs.StampDuty
     public class StampDutyResponse
     {
         [JsonPropertyName("calculationDate")]
-        public DateTime CalculationDate { get; set; }
+        public DateTime CalculationDate => DateTime.UtcNow;
+
+        [JsonPropertyName("purchasePrice")]
+        public double PurchasePrice { get; set; }
 
         [JsonPropertyName("stampDuty")]
-        public double Amount { get; set; }
+        public double Amount => Math.Round(Breakdown.Sum(x => x.TaxDue), 2);
 
         [JsonPropertyName("breakdown")]
         public List<StampDutyBreakdown> Breakdown { get; set; } = new List<StampDutyBreakdown>();
