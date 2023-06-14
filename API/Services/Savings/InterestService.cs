@@ -1,4 +1,3 @@
-using ChrisUsher.MoveMate.Shared;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 
 namespace ChrisUsher.MoveMate.API.Services.Savings

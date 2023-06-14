@@ -1,4 +1,4 @@
-﻿namespace ChrisUsher.MoveMate.Shared;
+﻿namespace ChrisUsher.MoveMate.Shared.DTOs.Savings;
 
 public class MonthlyInterestBreakdown
 {
