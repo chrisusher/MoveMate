@@ -51,6 +51,7 @@ var host = new HostBuilder()
         services.AddSingleton<SavingsService>();
         services.AddSingleton<PropertyRepository>();
         services.AddSingleton<PropertyService>();
+        services.AddSingleton<InterestService>();
     })
     .Build();
 
