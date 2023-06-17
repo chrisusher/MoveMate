@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using ChrisUsher.MoveMate.API.Database;
 using ChrisUsher.MoveMate.API.Repositories;
 using ChrisUsher.MoveMate.API.Services.Accounts;
+using ChrisUsher.MoveMate.API.Services.Mortgages;
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.API.Services.Properties;
@@ -52,6 +53,7 @@ var host = new HostBuilder()
         services.AddSingleton<PropertyRepository>();
         services.AddSingleton<PropertyService>();
         services.AddSingleton<InterestService>();
+        services.AddSingleton<MortgagePaymentService>();
     })
     .Build();
 

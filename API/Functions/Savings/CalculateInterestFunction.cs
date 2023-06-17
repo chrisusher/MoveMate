@@ -25,7 +25,7 @@ public class CalculateInterestFunction : HttpFunction
         _interestService = interestService;
     }
     
-    [OpenApiOperation(operationId: "CalculateInterest", tags: new[] { "Savings" }, Summary = "")]
+    [OpenApiOperation(operationId: "CalculateInterest", tags: new[] { "Savings Calculations" }, Summary = "")]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsInterestBreakdown))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
