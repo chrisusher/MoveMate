@@ -23,7 +23,8 @@ public class PropertyRepository
             Name = property.Name,
             MaxValue = property.MaxValue,
             MinValue = property.MinValue,
-            PropertyType = property.PropertyType
+            PropertyType = property.PropertyType,
+            Equity = property.Equity
         };
 
         await _databaseContext.Properties.AddAsync(propertyTable);
@@ -35,6 +36,11 @@ public class PropertyRepository
     public async Task<PropertyTable> GetPropertyAsync(Guid accountId, Guid propertyId)
     {
         return await _databaseContext.Properties.FirstOrDefaultAsync(x => x.AccountId == accountId && x.PropertyId == propertyId);
+    }
+
+    public async Task<PropertyTable> GetPropertyAsync(Guid accountId, PropertyType propertyType)
+    {
+        return await _databaseContext.Properties.FirstOrDefaultAsync(x => x.AccountId == accountId && x.PropertyType == propertyType);
     }
 
     public async Task<List<PropertyTable>> GetPropertiesAsync(Guid accountId, PropertyType propertyType)
@@ -55,6 +61,7 @@ public class PropertyRepository
         propertyTable.Name = property.Name;
         propertyTable.IsDeleted = property.IsDeleted;
         propertyTable.PropertyType = property.PropertyType;
+        propertyTable.Equity = property.Equity;
 
         _databaseContext.Properties.Update(propertyTable);
 

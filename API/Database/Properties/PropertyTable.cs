@@ -9,7 +9,7 @@ namespace ChrisUsher.MoveMate.API.Database.Properties
     {
         [Key]
         public Guid PropertyId { get; set; } = Guid.NewGuid();
-        
+
         public Guid AccountId { get; set; }
 
         public string Name { get; set; }
@@ -17,18 +17,20 @@ namespace ChrisUsher.MoveMate.API.Database.Properties
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public bool IsDeleted { get; set; }
-        
+
         public double MinValue { get; set; }
-        
+
         public double MaxValue { get; set; }
 
         public StampDutyResponse StampDuty { get; set; }
-        
+
         public PropertyType PropertyType { get; set; }
+
+        public Equity Equity { get; set; }
 
         public Property ToProperty()
         {
-            return new Property
+            var property = new Property
             {
                 PropertyId = PropertyId,
                 AccountId = AccountId,
@@ -39,6 +41,12 @@ namespace ChrisUsher.MoveMate.API.Database.Properties
                 IsDeleted = IsDeleted,
                 Created = Created
             };
+
+            if(Equity != null)
+            {
+                property.Equity = Equity;
+            }
+            return property;
         }
     }
 }

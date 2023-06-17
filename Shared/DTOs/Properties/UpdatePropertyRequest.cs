@@ -19,7 +19,8 @@ public class UpdatePropertyRequest : CreatePropertyRequest
             MaxValue = MaxValue,
             MinValue = MinValue,
             Name = Name,
-            PropertyType = PropertyType
+            PropertyType = PropertyType,
+            Equity = Equity
         };
     }
 }

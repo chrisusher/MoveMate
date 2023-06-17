@@ -43,14 +43,7 @@ public class CalculateInterestFunction : HttpFunction
             var account = await _accountService.GetAccountAsync(accountId);
             var savingsAccount = await _savingsService.GetSavingsAccountAsync(accountId, savingsId);
 
-            var interestEndDate = DateTime.UtcNow;
-
-            if(account.EstimatedSaleDate.HasValue)
-            {
-                interestEndDate = account.EstimatedSaleDate.Value;
-            }
-
-            var interestResponse = _interestService.CalculateInterest(savingsAccount, interestEndDate);
+            var interestResponse = _interestService.CalculateInterest(savingsAccount, account.EstimatedSaleDate);
             await response.WriteAsJsonAsync(interestResponse);
         }
         catch (DataNotFoundException dataNotFound)

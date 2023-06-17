@@ -11,6 +11,7 @@ using ChrisUsher.MoveMate.API.Services.Mortgages;
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.API.Services.Properties;
+using ChrisUsher.MoveMate.API.Services.Reports;
 
 var config = new ConfigurationBuilder()
 #if DEBUG
@@ -54,6 +55,7 @@ var host = new HostBuilder()
         services.AddSingleton<PropertyService>();
         services.AddSingleton<InterestService>();
         services.AddSingleton<MortgagePaymentService>();
+        services.AddSingleton<ReportsService>();
     })
     .Build();
 
