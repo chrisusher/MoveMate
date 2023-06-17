@@ -25,7 +25,7 @@ public class CalculateInterestFunction : HttpFunction
         _interestService = interestService;
     }
     
-    [OpenApiOperation(operationId: "CalculateInterest", tags: new[] { "Savings" }, Summary = "")]
+    [OpenApiOperation(operationId: "CalculateInterest", tags: new[] { "Savings Calculations" }, Summary = "")]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsInterestBreakdown))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
@@ -43,14 +43,7 @@ public class CalculateInterestFunction : HttpFunction
             var account = await _accountService.GetAccountAsync(accountId);
             var savingsAccount = await _savingsService.GetSavingsAccountAsync(accountId, savingsId);
 
-            var interestEndDate = DateTime.UtcNow;
-
-            if(account.EstimatedSaleDate.HasValue)
-            {
-                interestEndDate = account.EstimatedSaleDate.Value;
-            }
-
-            var interestResponse = _interestService.CalculateInterest(savingsAccount, interestEndDate);
+            var interestResponse = _interestService.CalculateInterest(savingsAccount, account.EstimatedSaleDate);
             await response.WriteAsJsonAsync(interestResponse);
         }
         catch (DataNotFoundException dataNotFound)

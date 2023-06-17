@@ -48,4 +48,13 @@ public class PropertyService
 
         return propertyTable.ToProperty();
     }
+
+    public async Task<Property> GetCurrentPropertyAsync(Guid accountId)
+    {
+        var propertyTable = await _propertyRepo.GetPropertyAsync(accountId, PropertyType.Current);
+
+        return propertyTable == null
+            ? throw new DataNotFoundException($"No Current Property found in Account '{accountId}'")
+            : propertyTable.ToProperty();
+    }
 }

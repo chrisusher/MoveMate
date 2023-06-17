@@ -4,8 +4,13 @@ namespace ChrisUsher.MoveMate.API.Services.Savings
 {
     public class InterestService
     {
-        public SavingsInterestBreakdown CalculateInterest(SavingsAccount account, DateTime endDate)
+        public SavingsInterestBreakdown CalculateInterest(SavingsAccount account, DateTime? endDate)
         {
+            if(endDate == null)
+            {
+                endDate = DateTime.UtcNow;
+            }
+
             var response = new SavingsInterestBreakdown();
 
             var date = account.Created;
@@ -45,7 +50,7 @@ namespace ChrisUsher.MoveMate.API.Services.Savings
                     Deposits = account.MonthlySavingsAmount,
                     Interest = Math.Round(interest, 2),
                     Balance = Math.Round(principal, 2),
-                    Date = endDate.Date
+                    Date = endDate.Value.Date
                 });
             }
 
