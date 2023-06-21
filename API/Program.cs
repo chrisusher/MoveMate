@@ -12,6 +12,7 @@ using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.Reports;
+using Azure.Core.Serialization;
 
 var config = new ConfigurationBuilder()
 #if DEBUG
@@ -21,7 +22,17 @@ var config = new ConfigurationBuilder()
     .Build();
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureFunctionsWorkerDefaults(worker =>
+    {
+        var options = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = true
+        };
+        options.Converters.Add(new JsonStringEnumConverter());
+
+        worker.Serializer = new JsonObjectSerializer(options);
+    })
     .ConfigureOpenApi()
     .ConfigureServices(services =>
     {
@@ -37,13 +48,6 @@ var host = new HostBuilder()
             options.LogTo(Console.WriteLine);
 
             #endif
-        });
-
-        services.ConfigureHttpJsonOptions(options => 
-        {
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            options.SerializerOptions.WriteIndented = true;
         });
 
         services.AddSingleton<StampDutyService>();
