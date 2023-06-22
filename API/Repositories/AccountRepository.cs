@@ -17,6 +17,7 @@ namespace ChrisUsher.MoveMate.API.Repositories
         public async Task<AccountTable> GetAccountAsync(Guid accountId)
         {
             return await _databaseContext.Accounts
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.AccountId == accountId);
         }
 

@@ -17,6 +17,7 @@ public class SavingsRepository
     public async Task<SavingsTable> GetSavingsAccountAsync(Guid accountId, Guid savingsId)
     {
         return await _databaseContext.Savings
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.AccountId == accountId && x.SavingsId == savingsId);
     }
 
@@ -25,6 +26,7 @@ public class SavingsRepository
         return await _databaseContext.Savings
             .Where(x => x.AccountId == accountId
                         && !x.IsDeleted)
+            .AsNoTracking()
             .ToListAsync();
     }
     
