@@ -1,11 +1,15 @@
 using ChrisUsher.MoveMate.API.Services.Accounts;
+using ChrisUsher.MoveMate.API.Services.Costs;
 using ChrisUsher.MoveMate.API.Services.Mortgages;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.Savings;
+using ChrisUsher.MoveMate.API.Services.StampDuty;
+using ChrisUsher.MoveMate.Shared.DTOs.Costs;
 using ChrisUsher.MoveMate.Shared.DTOs.Mortgages;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Reports;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
+using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
 using ChrisUsher.MoveMate.Shared.Enums;
 
 namespace ChrisUsher.MoveMate.API.Services.Reports;
@@ -17,13 +21,17 @@ public class ReportsService
     private readonly SavingsService _savingsService;
     private readonly InterestService _interestService;
     private readonly MortgagePaymentService _mortgagePaymentService;
+    private readonly CostService _costsService;
+    private readonly StampDutyService _stampDutyService;
 
     public ReportsService(
         AccountService accountService,
         PropertyService propertyService,
         SavingsService savingsService,
         InterestService interestService,
-        MortgagePaymentService mortgagePaymentService
+        MortgagePaymentService mortgagePaymentService,
+        CostService costsService,
+        StampDutyService stampDutyService
     )
     {
         _accountService = accountService;
@@ -31,6 +39,8 @@ public class ReportsService
         _savingsService = savingsService;
         _interestService = interestService;
         _mortgagePaymentService = mortgagePaymentService;
+        _costsService = costsService;
+        _stampDutyService = stampDutyService;
     }
 
     public async Task<PropertyViabilityReport> GetPropertyViabilityReport(Property property, double interestRate, CaseType caseType, int years)
@@ -52,32 +62,75 @@ public class ReportsService
         };
 
         var savings = await _savingsService.GetSavingsAccountsAsync(property.AccountId);
+        var costs = await _costsService.GetCostsAsync(property.AccountId);
 
         report.SavingsAccounts = CalculateSavings(savings, caseType, report.SaleDate);
-        report.TotalSavings = Math.Round(report.SavingsAccounts.Sum(s => s.InitialBalance), 2);
+        report.Costs = CalculateCosts(costs, caseType, property, currentProperty);
 
         switch(caseType)
         {
             case CaseType.BestCase:
                 report.Equity = currentProperty.MaxValue - currentProperty.Equity.RemainingMortgage;
 
-                report.MonthlyMortgagePayments = CalculateMonthlyPayments(property.MinValue, report.TotalSavings, report.Equity, interestRate, years);
+                report.MonthlyMortgagePayments = CalculateMonthlyPayments(property.MinValue, report.TotalSavings - report.TotalCosts, report.Equity, interestRate, years);
                 break;
             
             case CaseType.MiddleCase:
                 report.Equity = Math.Round((currentProperty.MaxValue + currentProperty.MaxValue) / 2 - currentProperty.Equity.RemainingMortgage, 2);
 
-                report.MonthlyMortgagePayments = CalculateMonthlyPayments(Math.Round((property.MaxValue + property.MinValue) / 2, 2), report.TotalSavings, report.Equity, interestRate, years);
+                report.MonthlyMortgagePayments = CalculateMonthlyPayments(Math.Round((property.MaxValue + property.MinValue) / 2, 2), report.TotalSavings - report.TotalCosts, report.Equity, interestRate, years);
                 break;
             
             case CaseType.WorstCase:
                 report.Equity = currentProperty.MinValue - currentProperty.Equity.RemainingMortgage;
 
-                report.MonthlyMortgagePayments = CalculateMonthlyPayments(property.MaxValue, report.TotalSavings, report.Equity, interestRate, years);
+                report.MonthlyMortgagePayments = CalculateMonthlyPayments(property.MaxValue, report.TotalSavings - report.TotalCosts, report.Equity, interestRate, years);
                 break;
         }
 
         return report;
+    }
+
+    private List<Cost> CalculateCosts(List<Cost> costs, CaseType caseType, Property purchaseProperty, Property currentProperty)
+    {
+        for(int index = 0; index < costs.Count; index++)
+        {
+            var cost = costs[index];
+            
+            if(currentProperty != null && cost.PercentageOfSale.HasValue)
+            {
+                var percentage = cost.PercentageOfSale.Value / 100;
+                costs[index].PercentageOfSale = null;
+
+                switch (caseType)
+                {
+                    case CaseType.BestCase:
+                        costs[index].FixedCost = Math.Round(currentProperty.MaxValue * percentage, 2);
+                        break;
+                    case CaseType.WorstCase:
+                        costs[index].FixedCost = Math.Round(currentProperty.MinValue * percentage, 2);
+                        break;
+                    case CaseType.MiddleCase:
+                        var middleValue = (currentProperty.MaxValue + currentProperty.MinValue) / 2;
+                        costs[index].FixedCost = Math.Round(middleValue * percentage, 2);
+                        break;
+                }
+            }
+        }
+
+        costs.Add(new Cost
+        {
+            Name = "Stamp Duty",
+            FixedCost = _stampDutyService.CalculateStampDuty(purchaseProperty, new StampDutyRequest
+            {
+                AdditionalProperty = false,
+                ResidentialType = PropertyResidentialType.Residential,
+                Location = UKRegionType.Wales,
+            }, caseType).Amount,
+            Created = DateTime.UtcNow,
+        });
+        
+        return costs;
     }
 
     private List<MonthlyMortgagePayment> CalculateMonthlyPayments(double purchasePrice, double totalSavings, double equity, double interestRate, int years)
