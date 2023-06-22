@@ -1,4 +1,5 @@
 ﻿using ChrisUsher.MoveMate.API.Database.Accounts;
+using ChrisUsher.MoveMate.API.Database.Costs;
 using ChrisUsher.MoveMate.API.Database.Properties;
 using ChrisUsher.MoveMate.API.Database.Savings;
 using Microsoft.EntityFrameworkCore;
@@ -30,9 +31,15 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<SavingsTable>()
             .ToContainer("Savings")
             .HasPartitionKey("AccountId");
+
+        modelBuilder.Entity<CostTable>()
+            .ToContainer("Costs")
+            .HasPartitionKey("AccountId");
     }
 
     public DbSet<AccountTable> Accounts { get; set; }
+
+    public DbSet<CostTable> Costs { get; set; }
 
     public DbSet<PropertyTable> Properties { get; set; }
 
