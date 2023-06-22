@@ -17,6 +17,7 @@ namespace ChrisUsher.MoveMate.API.Repositories
         public async Task<CostTable> GetCostAsync(Guid accountId, Guid costId)
         {
             return await _databaseContext.Costs
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.AccountId == accountId && x.CostId == costId);
         }
 
@@ -25,6 +26,7 @@ namespace ChrisUsher.MoveMate.API.Repositories
             return await _databaseContext.Costs
                 .Where(x => x.AccountId == accountId
                             && !x.IsDeleted)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
