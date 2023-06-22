@@ -1,6 +1,6 @@
-namespace ChrisUsher.MoveMate.Shared.DTOs.Savings
+namespace ChrisUsher.MoveMate.Shared.DTOs
 {
-    public class SavingFluctuation
+    public class Fluctuation
     {
         [JsonPropertyName("worstCase")]
         public double WorstCase { get; set; }

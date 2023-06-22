@@ -13,6 +13,7 @@ using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.Reports;
 using Azure.Core.Serialization;
+using ChrisUsher.MoveMate.API.Services.Costs;
 
 var config = new ConfigurationBuilder()
 #if DEBUG
@@ -56,10 +57,12 @@ var host = new HostBuilder()
         services.AddSingleton<SavingsRepository>();
         services.AddSingleton<SavingsService>();
         services.AddSingleton<PropertyRepository>();
+        services.AddSingleton<CostRepository>();
         services.AddSingleton<PropertyService>();
         services.AddSingleton<InterestService>();
         services.AddSingleton<MortgagePaymentService>();
         services.AddSingleton<ReportsService>();
+        services.AddSingleton<CostService>();
     })
     .Build();
 

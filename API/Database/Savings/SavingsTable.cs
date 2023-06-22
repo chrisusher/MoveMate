@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ChrisUsher.MoveMate.Shared.DTOs;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 
 namespace ChrisUsher.MoveMate.API.Database.Savings
@@ -18,7 +19,7 @@ namespace ChrisUsher.MoveMate.API.Database.Savings
 
         public List<AccountBalance> Balances { get; set; } = new List<AccountBalance>();
 
-        public SavingFluctuation Fluctuations { get; set; }
+        public Fluctuation Fluctuations { get; set; }
 
         public double MonthlySavingsAmount { get; set; }
 
