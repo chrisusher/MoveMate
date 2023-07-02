@@ -17,6 +17,7 @@ public class SavingsRepository
     public async Task<SavingsTable> GetSavingsAccountAsync(Guid accountId, Guid savingsId)
     {
         return await _databaseContext.Savings
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.AccountId == accountId && x.SavingsId == savingsId);
     }
 
@@ -25,9 +26,10 @@ public class SavingsRepository
         return await _databaseContext.Savings
             .Where(x => x.AccountId == accountId
                         && !x.IsDeleted)
+            .AsNoTracking()
             .ToListAsync();
     }
-    
+
     public async Task<SavingsTable> CreateSavingsAccountAsync(Guid accountId, SavingsAccount account)
     {
         var savingsTable = new SavingsTable
@@ -44,6 +46,21 @@ public class SavingsRepository
         await _databaseContext.SaveChangesAsync();
 
         return savingsTable;
+    }
+
+    public async Task<SavingsTable> CreateNewBalanceAsync(Guid accountId, Guid savingsId, double balance)
+    {
+        var savings = await _databaseContext.Savings.FirstAsync(x => x.AccountId == accountId && x.SavingsId == savingsId);
+
+        savings.Balances.Add(new AccountBalance
+        {
+            Created = DateTime.UtcNow,
+            Balance = balance
+        });
+
+        await _databaseContext.SaveChangesAsync();
+
+        return savings;
     }
 
     public async Task<SavingsTable> UpdateSavingsAccountAsync(SavingsAccount account)

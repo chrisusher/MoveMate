@@ -15,7 +15,7 @@ public class CreateSavingsAccountRequest
     public double MonthlySavingsAmount { get; set; }
 
     [JsonPropertyName("fluctuations")]
-    public SavingFluctuation Fluctuations { get; set; }
+    public Fluctuation Fluctuations { get; set; }
 
     public SavingsAccount ToSavingsAccount()
     {
