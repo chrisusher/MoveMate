@@ -11,6 +11,6 @@ namespace ChrisUsher.MoveMate.Shared.DTOs.Reports
         public double TotalSavings { get; set; } = 0;
 
         [JsonPropertyName("savings")]
-        public List<SavingsAccount> Savings { get; set; } = new List<SavingsAccount>();
+        public List<ReportSavingsAccount> Savings { get; set; } = new();
     }
 }
