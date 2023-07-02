@@ -1,0 +1,24 @@
+﻿@page "/Savings"
+@inject Clients.SavingsClient SavingsClient;
+@using ChrisUsher.MoveMate.Shared.DTOs.Reports
+<h3>My Savings</h3>
+<h4>Total Savings : £@_savings.TotalSavings</h4>
+
+@foreach (var saving in _savings.Savings)
+{
+    <h4>@saving.Name</h4>
+    <h4>Balance : £@saving.CurrentBalance</h4>
+}
+
+@code {
+    SavingsReport _savings = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _savings = await SavingsClient.GetSavingsReportAsync(Guid.Parse("b1305134-b696-4f18-ab00-b9b12a67b335"));
+
+        await Task.CompletedTask;
+    }
+}
