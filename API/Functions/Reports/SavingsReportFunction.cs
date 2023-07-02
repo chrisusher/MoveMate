@@ -1,6 +1,7 @@
 using System.Net;
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Reports;
+using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 using ChrisUsher.MoveMate.Shared.Enums;
 using Microsoft.OpenApi.Models;
 
@@ -46,39 +47,46 @@ public class SavingsReportFunction : HttpFunction
 
             var report = new SavingsReport
             {
-                Savings = await _savingsService.GetSavingsAccountsAsync(accountId)
+                Savings = (await _savingsService.GetSavingsAccountsAsync(accountId))
+                    .Select(ReportSavingsAccount.FromSavingsAccount)
+                    .ToList()
             };
 
-            foreach(var savingsAccount in report.Savings)
+            for(int index = 0; index < report.Savings.Count; index++)
             {
+                var savingsAccount = report.Savings[index];
+                
                 if(savingsAccount.Fluctuations != null)
                 {
                     switch(caseType)
                     {
                         case CaseType.MiddleCase:
-                            totalBalance += Math.Round((savingsAccount.Fluctuations.WorstCase + savingsAccount.Fluctuations.BestCase) / 2, 2);
+                            report.Savings[index].CurrentBalance = Math.Round((savingsAccount.Fluctuations.WorstCase + savingsAccount.Fluctuations.BestCase) / 2, 2);
                             break;
                         case CaseType.WorstCase:
-                            totalBalance += savingsAccount.Fluctuations.WorstCase;
+                            report.Savings[index].CurrentBalance += savingsAccount.Fluctuations.WorstCase;
                             break;
                         case CaseType.BestCase:
-                            totalBalance += savingsAccount.Fluctuations.BestCase;
+                            report.Savings[index].CurrentBalance += savingsAccount.Fluctuations.BestCase;
                             break;
                     }
+                    totalBalance += report.Savings[index].CurrentBalance;
                     continue;
                 }
 
                 if(savingsAccount.Balances.Any())
                 {
-                    totalBalance += savingsAccount.Balances
+                    report.Savings[index].CurrentBalance = savingsAccount.Balances
                         .OrderBy(x => x.Created)
                         .Last()
                         .Balance;
 
+                    totalBalance += report.Savings[index].CurrentBalance;
                     continue;
                 }
 
-                totalBalance += savingsAccount.InitialBalance;
+                report.Savings[index].CurrentBalance = savingsAccount.InitialBalance;
+                totalBalance += report.Savings[index].CurrentBalance;
             }
             report.TotalSavings = totalBalance;
             await response.WriteAsJsonAsync(report);
