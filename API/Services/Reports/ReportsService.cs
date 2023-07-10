@@ -43,61 +43,91 @@ public class ReportsService
         _stampDutyService = stampDutyService;
     }
 
-    public async Task<PropertyViabilityReport> GetPropertyViabilityReport(Property property, double interestRate, CaseType caseType, int years)
+    public async Task<PropertyViabilityReport> GetPropertyViabilityReport(Property property, PropertyViabilityReportRequest request)
     {
-        if(property == null)
+        if (property == null)
         {
             throw new DataNotFoundException("Property passed to PropertyViabilityReport was not found.");
         }
         var account = await _accountService.GetAccountAsync(property.AccountId);
         var currentProperty = await _propertyService.GetCurrentPropertyAsync(property.AccountId);
 
-        var report = new PropertyViabilityReport
+        var requestJson = JsonSerializer.Serialize(request);
+        var report = JsonSerializer.Deserialize<PropertyViabilityReport>(requestJson);
+
+        report.SaleDate = account.EstimatedSaleDate;
+        report.Property = property;
+
+        var purchasePrice = 0.0;
+
+        if (request.CurrentPropertySalePrice.HasValue)
         {
-            SaleDate = account.EstimatedSaleDate,
-            Property = property,
-            InterestRate = interestRate,
-            Years = years,
-            CaseType = caseType
-        };
+            report.Equity = request.CurrentPropertySalePrice.Value - currentProperty.Equity.RemainingMortgage;
+        }
+        if (request.PurchasePrice.HasValue)
+        {
+            purchasePrice = request.PurchasePrice.Value;
+        }
 
         var savings = await _savingsService.GetSavingsAccountsAsync(property.AccountId);
         var costs = await _costsService.GetCostsAsync(property.AccountId);
 
-        report.SavingsAccounts = CalculateSavings(savings, caseType, report.SaleDate);
-        report.Costs = CalculateCosts(costs, caseType, property, currentProperty);
+        report.SavingsAccounts = CalculateSavings(savings, request.CaseType, report.SaleDate);
+        report.Costs = CalculateCosts(costs, request.CaseType, property, currentProperty);
 
-        switch(caseType)
+        switch (request.CaseType)
         {
             case CaseType.BestCase:
-                report.Equity = currentProperty.MaxValue - currentProperty.Equity.RemainingMortgage;
+                if (report.Equity == 0)
+                {
+                    report.Equity = currentProperty.MaxValue - currentProperty.Equity.RemainingMortgage;
+                }
+                if (purchasePrice == 0)
+                {
+                    purchasePrice = property.MinValue;
+                }
 
-                report.MonthlyMortgagePayments = CalculateMonthlyPayments(property.MinValue, report.TotalSavings - report.TotalCosts, report.Equity, interestRate, years);
+                report.MonthlyMortgagePayments = CalculateMonthlyPayments(purchasePrice, report.TotalSavings - report.TotalCosts, report.Equity, request.InterestRate, request.Years);
                 break;
-            
+
             case CaseType.MiddleCase:
-                report.Equity = Math.Round((currentProperty.MaxValue + currentProperty.MaxValue) / 2 - currentProperty.Equity.RemainingMortgage, 2);
+                if (report.Equity == 0)
+                {
+                    report.Equity = Math.Round((currentProperty.MaxValue + currentProperty.MinValue) / 2 - currentProperty.Equity.RemainingMortgage, 2);
+                }
+                if (purchasePrice == 0)
+                {
+                    purchasePrice = Math.Round((property.MaxValue + property.MinValue) / 2, 2);
+                }
 
-                report.MonthlyMortgagePayments = CalculateMonthlyPayments(Math.Round((property.MaxValue + property.MinValue) / 2, 2), report.TotalSavings - report.TotalCosts, report.Equity, interestRate, years);
+                report.MonthlyMortgagePayments = CalculateMonthlyPayments(purchasePrice, report.TotalSavings - report.TotalCosts, report.Equity, request.InterestRate, request.Years);
                 break;
-            
-            case CaseType.WorstCase:
-                report.Equity = currentProperty.MinValue - currentProperty.Equity.RemainingMortgage;
 
-                report.MonthlyMortgagePayments = CalculateMonthlyPayments(property.MaxValue, report.TotalSavings - report.TotalCosts, report.Equity, interestRate, years);
+            case CaseType.WorstCase:
+                if (report.Equity == 0)
+                {
+                    report.Equity = currentProperty.MinValue - currentProperty.Equity.RemainingMortgage;
+                }
+                if (purchasePrice == 0)
+                {
+                    purchasePrice = property.MaxValue;
+                }
+
+                report.MonthlyMortgagePayments = CalculateMonthlyPayments(purchasePrice, report.TotalSavings - report.TotalCosts, report.Equity, request.InterestRate, request.Years);
                 break;
         }
 
+        report.Property.PurchasePrice = purchasePrice;
         return report;
     }
 
     private List<Cost> CalculateCosts(List<Cost> costs, CaseType caseType, Property purchaseProperty, Property currentProperty)
     {
-        for(int index = 0; index < costs.Count; index++)
+        for (int index = 0; index < costs.Count; index++)
         {
             var cost = costs[index];
-            
-            if(currentProperty != null && cost.PercentageOfSale.HasValue)
+
+            if (currentProperty != null && cost.PercentageOfSale.HasValue)
             {
                 var percentage = cost.PercentageOfSale.Value / 100;
                 costs[index].PercentageOfSale = null;
@@ -129,7 +159,7 @@ public class ReportsService
             }, caseType).Amount,
             Created = DateTime.UtcNow,
         });
-        
+
         return costs;
     }
 
@@ -139,7 +169,7 @@ public class ReportsService
 
         var currentSavingAmount = 0;
 
-        while(currentSavingAmount < totalSavings)
+        while (currentSavingAmount < totalSavings)
         {
             var deposit = equity + currentSavingAmount;
 
@@ -160,11 +190,11 @@ public class ReportsService
     {
         var calculatedSavings = new List<SavingsAccount>();
 
-        foreach(var saving in savings)
+        foreach (var saving in savings)
         {
-            if(saving.Fluctuations != null)
+            if (saving.Fluctuations != null)
             {
-                switch(caseType)
+                switch (caseType)
                 {
                     case CaseType.BestCase:
                         calculatedSavings.Add(new SavingsAccount
@@ -183,7 +213,7 @@ public class ReportsService
                             SavingsRate = saving.SavingsRate
                         });
                         break;
-                    
+
                     case CaseType.WorstCase:
                         calculatedSavings.Add(new SavingsAccount
                         {
@@ -195,7 +225,7 @@ public class ReportsService
                 }
                 continue;
             }
-        
+
             calculatedSavings.Add(new SavingsAccount
             {
                 Name = saving.Name,
