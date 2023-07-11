@@ -17,6 +17,16 @@ namespace ChrisUsher.MoveMate.API.Services.Savings
             var interest = 0.0;
             var principal = account.InitialBalance;
 
+            if(account.Balances.Any())
+            {
+                var latestBalance = account.Balances
+                    .OrderBy(x => x.Created)
+                    .Last();
+
+                date = latestBalance.Created;
+                principal = latestBalance.Balance;
+            }
+
             while (date < endDate)
             {
                 var dailyInterest = GetDailyInterest(principal, account.SavingsRate);
