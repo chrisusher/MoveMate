@@ -29,4 +29,4 @@ jobs:
     - name: Build
       run: dotnet build MoveMate.API.sln --no-restore
     - name: Run Services Tests
-      run: dotnet test Tests/Services.Tests/Services.Tests.csproj
+      run: dotnet test Tests/Services.Tests/Services.Tests.csproj --no-build
