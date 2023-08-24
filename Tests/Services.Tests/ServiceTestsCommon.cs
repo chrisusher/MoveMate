@@ -1,4 +1,8 @@
+using ChrisUsher.MoveMate.API.Database;
+using ChrisUsher.MoveMate.API.Repositories;
+using ChrisUsher.MoveMate.API.Services.Costs;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services.Tests
 {
@@ -22,7 +26,23 @@ namespace Services.Tests
         {
             var services = new ServiceCollection();
 
+            services.AddDbContext<DatabaseContext>(options => 
+            {
+                options.UseCosmos(Environment.GetEnvironmentVariable("MOVEMATE_COSMOS_CONNECTIONSTRING"), "movemate-test");
+
+                options.EnableSensitiveDataLogging();
+
+                #if DEBUG
+                
+                options.EnableDetailedErrors();
+                options.LogTo(Console.WriteLine);
+
+                #endif
+            });
+
+            services.AddSingleton<CostRepository>();
             services.AddSingleton<StampDutyService>();
+            services.AddSingleton<CostService>();
 
             return services.BuildServiceProvider();
         }        
