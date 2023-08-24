@@ -23,6 +23,8 @@ namespace ChrisUsher.MoveMate.API.Database.Costs
 
         public Fluctuation Fluctuations { get; set; }
 
+        public bool IncludesVAT { get; set; }
+
         public Cost ToCost()
         {
             return new Cost

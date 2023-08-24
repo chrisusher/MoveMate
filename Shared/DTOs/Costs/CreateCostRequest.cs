@@ -14,6 +14,9 @@ namespace ChrisUsher.MoveMate.Shared.DTOs.Costs
         [JsonPropertyName("fluctuations")]
         public Fluctuation Fluctuations { get; set; }
 
+        [JsonPropertyName("includesVAT")]
+        public bool IncludesVAT { get; set; }
+
         public Cost ToCost()
         {
             return new Cost
