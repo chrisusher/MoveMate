@@ -32,4 +32,4 @@ jobs:
     - name: Build
       run: dotnet build MoveMate.API.sln --no-restore --configuration ${{ env.BUILD_CONFIG }}
     - name: Run Services Tests
-      run: dotnet test Tests/Services.Tests/Services.Tests.csproj --no-build
+      run: dotnet test Tests/Services.Tests/Services.Tests.csproj --no-build --configuration ${{ env.BUILD_CONFIG }}
