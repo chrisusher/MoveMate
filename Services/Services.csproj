@@ -3,10 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>ChrisUsher.MoveMate.API.Services</RootNamespace>
     <AssemblyName>ChrisUsher.MoveMate.API.Services</AssemblyName>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.5" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>

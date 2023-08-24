@@ -1,0 +1,1 @@
+global using ChrisUsher.MoveMate.Shared.Exceptions;
