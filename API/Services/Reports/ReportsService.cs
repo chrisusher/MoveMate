@@ -73,7 +73,7 @@ public class ReportsService
         var costs = await _costsService.GetCostsAsync(property.AccountId);
 
         report.SavingsAccounts = CalculateSavings(savings, request.CaseType, report.SaleDate);
-        report.Costs = CalculateCosts(costs, request.CaseType, property, currentProperty);
+        report.Costs = _costsService.CalculateCosts(costs, request.CaseType, property, currentProperty);
 
         switch (request.CaseType)
         {
@@ -119,48 +119,6 @@ public class ReportsService
 
         report.Property.PurchasePrice = purchasePrice;
         return report;
-    }
-
-    private List<Cost> CalculateCosts(List<Cost> costs, CaseType caseType, Property purchaseProperty, Property currentProperty)
-    {
-        for (int index = 0; index < costs.Count; index++)
-        {
-            var cost = costs[index];
-
-            if (currentProperty != null && cost.PercentageOfSale.HasValue)
-            {
-                var percentage = cost.PercentageOfSale.Value / 100;
-                costs[index].PercentageOfSale = null;
-
-                switch (caseType)
-                {
-                    case CaseType.BestCase:
-                        costs[index].FixedCost = Math.Round(currentProperty.MaxValue * percentage, 2);
-                        break;
-                    case CaseType.WorstCase:
-                        costs[index].FixedCost = Math.Round(currentProperty.MinValue * percentage, 2);
-                        break;
-                    case CaseType.MiddleCase:
-                        var middleValue = (currentProperty.MaxValue + currentProperty.MinValue) / 2;
-                        costs[index].FixedCost = Math.Round(middleValue * percentage, 2);
-                        break;
-                }
-            }
-        }
-
-        costs.Add(new Cost
-        {
-            Name = "Stamp Duty",
-            FixedCost = _stampDutyService.CalculateStampDuty(purchaseProperty, new StampDutyRequest
-            {
-                AdditionalProperty = false,
-                ResidentialType = PropertyResidentialType.Residential,
-                Location = UKRegionType.Wales,
-            }, caseType).Amount,
-            Created = DateTime.UtcNow,
-        });
-
-        return costs;
     }
 
     private List<MonthlyMortgagePayment> CalculateMonthlyPayments(double purchasePrice, double totalSavings, double equity, double interestRate, int years)

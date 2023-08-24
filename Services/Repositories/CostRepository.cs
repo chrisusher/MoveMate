@@ -37,6 +37,7 @@ namespace ChrisUsher.MoveMate.API.Repositories
                 AccountId = accountId,
                 Name = cost.Name,
                 FixedCost = cost.FixedCost,
+                IncludesVAT = cost.IncludesVAT,
                 Fluctuations = cost.Fluctuations,
                 PercentageOfSale = cost.PercentageOfSale,
             };
@@ -54,6 +55,7 @@ namespace ChrisUsher.MoveMate.API.Repositories
             costTable.FixedCost = cost.FixedCost;
             costTable.IsDeleted = cost.IsDeleted;
             costTable.Name = cost.Name;
+            costTable.IncludesVAT = cost.IncludesVAT;
             costTable.Fluctuations = cost.Fluctuations;
             costTable.PercentageOfSale = cost.PercentageOfSale;
 

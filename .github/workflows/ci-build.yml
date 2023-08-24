@@ -6,8 +6,11 @@ on:
   pull_request:
     branches: [ "main" ]
 
-jobs:
+env:
+  BUILD_CONFIG: 'Release'
+  MOVEMATE_COSMOS_CONNECTIONSTRING: ${{ vars.MOVEMATE_COSMOS_CONNECTIONSTRING }}
 
+jobs:
   build:
     runs-on: ubuntu-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -27,6 +30,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore MoveMate.API.sln
     - name: Build
-      run: dotnet build MoveMate.API.sln --no-restore
+      run: dotnet build MoveMate.API.sln --no-restore --configuration ${{ env.BUILD_CONFIG }}
     - name: Run Services Tests
-      run: dotnet test Tests/Services.Tests/Services.Tests.csproj --no-build
+      run: dotnet test Tests/Services.Tests/Services.Tests.csproj --no-build --configuration ${{ env.BUILD_CONFIG }}

@@ -401,3 +401,5 @@ FodyWeavers.xsd
 
 .terraform/
 local.settings.json
+
+.env

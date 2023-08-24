@@ -1,3 +1,5 @@
+using dotenv.net;
+
 namespace Services.Tests
 {
     [SetUpFixture]
@@ -6,7 +8,9 @@ namespace Services.Tests
         [OneTimeSetUp]
         public static void AssemblySetup()
         {
-            
+#if DEBUG
+            DotEnv.Load(new DotEnvOptions(probeForEnv: true, ignoreExceptions: false));
+#endif
         }
     }
 }
