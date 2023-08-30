@@ -20,7 +20,9 @@ namespace Services.Tests
             {
                 if (_account == null)
                 {
-                    _account = Services.GetService<AccountService>().GetAccountAsync(Guid.Parse("7570e5af-0e67-40b0-af4b-80ac362de7e1")).Result;
+                    _account = Services.GetService<AccountService>()
+                        .GetAccountAsync(Guid.Parse("7570e5af-0e67-40b0-af4b-80ac362de7e1"))
+                        .Result;
                 }
                 return _account;
             }
@@ -32,7 +34,10 @@ namespace Services.Tests
             {
                 if (_purchaseProperty == null)
                 {
-                    _purchaseProperty = Services.GetService<PropertyService>().GetPropertiesAsync(DefaultAccount.AccountId, PropertyType.ToPurchase).Result.First();
+                    _purchaseProperty = Services.GetService<PropertyService>()
+                        .GetPropertiesAsync(DefaultAccount.AccountId, PropertyType.ToPurchase)
+                        .Result
+                        .First();
                 }
                 return _purchaseProperty;
             }

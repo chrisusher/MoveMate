@@ -26,7 +26,7 @@ namespace Services.Tests.Reports
             {
                 CaseType = CaseType.BestCase,
                 CurrentPropertySalePrice = 0,
-                PurchasePrice = 410000,
+                PurchasePrice = purchasePrice,
             };
             var property = new Property
             {
