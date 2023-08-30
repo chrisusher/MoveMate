@@ -4,12 +4,10 @@ using ChrisUsher.MoveMate.API.Services.Mortgages;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
-using ChrisUsher.MoveMate.Shared.DTOs.Costs;
 using ChrisUsher.MoveMate.Shared.DTOs.Mortgages;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Reports;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
-using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
 using ChrisUsher.MoveMate.Shared.Enums;
 
 namespace ChrisUsher.MoveMate.API.Services.Reports;
@@ -43,7 +41,7 @@ public class ReportsService
         _stampDutyService = stampDutyService;
     }
 
-    public async Task<PropertyViabilityReport> GetPropertyViabilityReport(Property property, PropertyViabilityReportRequest request)
+    public async Task<PropertyViabilityReport> GetPropertyViabilityReportAsync(Property property, PropertyViabilityReportRequest request)
     {
         if (property == null)
         {
@@ -67,6 +65,8 @@ public class ReportsService
         if (request.PurchasePrice.HasValue)
         {
             purchasePrice = request.PurchasePrice.Value;
+            property.MinValue = purchasePrice;
+            property.MaxValue = purchasePrice;
         }
 
         var savings = await _savingsService.GetSavingsAccountsAsync(property.AccountId);
