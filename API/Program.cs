@@ -5,15 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 using ChrisUsher.MoveMate.API.Database;
-using ChrisUsher.MoveMate.API.Repositories;
-using ChrisUsher.MoveMate.API.Services.Accounts;
-using ChrisUsher.MoveMate.API.Services.Mortgages;
-using ChrisUsher.MoveMate.API.Services.Savings;
-using ChrisUsher.MoveMate.API.Services.StampDuty;
-using ChrisUsher.MoveMate.API.Services.Properties;
-using ChrisUsher.MoveMate.API.Services.Reports;
 using Azure.Core.Serialization;
-using ChrisUsher.MoveMate.API.Services.Costs;
+using ChrisUsher.MoveMate.API.Services;
 
 var config = new ConfigurationBuilder()
 #if DEBUG
@@ -51,18 +44,7 @@ var host = new HostBuilder()
             #endif
         });
 
-        services.AddSingleton<StampDutyService>();
-        services.AddSingleton<AccountRepository>();
-        services.AddSingleton<AccountService>();
-        services.AddSingleton<SavingsRepository>();
-        services.AddSingleton<SavingsService>();
-        services.AddSingleton<PropertyRepository>();
-        services.AddSingleton<CostRepository>();
-        services.AddSingleton<PropertyService>();
-        services.AddSingleton<InterestService>();
-        services.AddSingleton<MortgagePaymentService>();
-        services.AddSingleton<ReportsService>();
-        services.AddSingleton<CostService>();
+        services.AddMoveMateServices();
     })
     .Build();
 
