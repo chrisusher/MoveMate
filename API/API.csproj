@@ -12,7 +12,6 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.13" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.OpenApi" Version="1.5.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.7.0" />
-    <PackageReference Include="MortgageCalcHelperLib" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

@@ -45,7 +45,7 @@ public class PropertyViabilityReportFunction : HttpFunction
 
             var property = await _propertyService.GetPropertyAsync(accountId, propertyId);
 
-            var report = await _reportService.GetPropertyViabilityReport(property, requestBody);
+            var report = await _reportService.GetPropertyViabilityReportAsync(property, requestBody);
             await response.WriteAsJsonAsync(report);
         }
         catch (DataNotFoundException dataNotFound)
