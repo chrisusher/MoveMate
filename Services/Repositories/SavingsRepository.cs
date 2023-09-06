@@ -72,7 +72,6 @@ public class SavingsRepository
         accountTable.MonthlySavingsAmount = account.MonthlySavingsAmount;
         accountTable.IsDeleted = account.IsDeleted;
         accountTable.Name = account.Name;
-        accountTable.Balances = account.Balances;
         accountTable.Fluctuations = account.Fluctuations;
 
         _databaseContext.Savings.Update(accountTable);

@@ -12,5 +12,8 @@ namespace ChrisUsher.MoveMate.Shared.DTOs.StampDuty
 
         [JsonPropertyName("additionalProperty")]
         public bool AdditionalProperty { get; set; }
+
+        [JsonPropertyName("taxRate")]
+        public UKTaxType TaxRate { get; set; }
     }
 }
