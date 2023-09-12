@@ -3,19 +3,232 @@ using ChrisUsher.MoveMate.Shared.Enums;
 
 namespace ChrisUsher.MoveMate.API.Services.StampDuty
 {
-    public static class WalesStampDutyService
+    public static class EnglandStampDutyService
     {
         public static StampDutyResponse CalculateStampDuty(double amount, StampDutyRequest stampDutyRequest)
         {
-            if(stampDutyRequest.TaxRate == UKTaxType.HigherTax)
+            if(stampDutyRequest.FirstTime)
             {
-                return CalculateHigherTaxStampDuty(amount);
+                return CalculateFirstTimeStampDuty(amount);
+            }
+            if(stampDutyRequest.AdditionalProperty)
+            {
+                return CalculateAdditionalStampDuty(amount);
             }
             if(stampDutyRequest.ResidentialType == PropertyResidentialType.NonResidential)
             {
-                return CalculateNonResidentialStampDuty(amount);
+                throw new Exception("Non-Residential is not yet supported by the Land Transaction Tax Calculator.");
             }
             return CalculateMainTaxStampDuty(amount);
+        }
+
+        private static StampDutyResponse CalculateFirstTimeStampDuty(double amount)
+        {
+            if(amount > 625000)
+            {
+                return CalculateFirstTimeStampDutyLargeAmount(amount);
+            }
+            StampDutyBreakdown currentBreakdown;
+
+            var response = new StampDutyResponse
+            {
+                PurchasePrice = amount
+            };
+
+            response.Breakdown.Add(new StampDutyBreakdown
+            {
+                Amount = amount < 425000 ? amount : 425000,
+                TaxDue = 0,
+                Percentage = 0,
+                Name = "Up to 425,000"
+            });
+
+            currentBreakdown = new StampDutyBreakdown
+            {
+                Name = "Above 425,000 and up to 625,000",
+                Percentage = 5,
+            };
+
+            double taxableAmount;
+
+            if (amount > 425000)
+            {
+                taxableAmount = amount - 425000;
+
+                if(taxableAmount > 200000)
+                {
+                    taxableAmount = 200000;
+                }
+
+                currentBreakdown.Amount = taxableAmount;
+                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
+            }
+
+            response.Breakdown.Add(currentBreakdown);
+
+            return response;
+        }
+
+        private static StampDutyResponse CalculateFirstTimeStampDutyLargeAmount(double amount)
+        {
+            StampDutyBreakdown currentBreakdown;
+
+            var response = new StampDutyResponse
+            {
+                PurchasePrice = amount
+            };
+
+            response.Breakdown.Add(new StampDutyBreakdown
+            {
+                Amount = amount < 250000 ? amount : 250000,
+                TaxDue = 0,
+                Percentage = 0,
+                Name = "Up to 250,000"
+            });
+
+            currentBreakdown = new StampDutyBreakdown
+            {
+                Name = "Above 250,000 and up to 925,000",
+                Percentage = 5,
+            };
+
+            double taxableAmount;
+
+            if (amount > 250000)
+            {
+                taxableAmount = amount - 250000;
+
+                if(taxableAmount > 675000)
+                {
+                    taxableAmount = 675000;
+                }
+
+                currentBreakdown.Amount = taxableAmount;
+                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
+            }
+
+            response.Breakdown.Add(currentBreakdown);
+
+            currentBreakdown = new StampDutyBreakdown
+            {
+                Name = "Above 925,000 and up to 1,500,000",
+                Percentage = 10,
+            };
+
+            if (amount > 925000)
+            {
+                taxableAmount = amount - 925000;
+
+                if(taxableAmount > 575000)
+                {
+                    taxableAmount = 575000;
+                }
+
+                currentBreakdown.Amount = taxableAmount;
+                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
+            }
+
+            response.Breakdown.Add(currentBreakdown);
+
+            currentBreakdown = new StampDutyBreakdown
+            {
+                Name = "Above 1,500,000",
+                Percentage = 12,
+            };
+
+            if (amount > 1500000)
+            {
+                taxableAmount = amount - 1500000;
+
+                currentBreakdown.Amount = taxableAmount;
+                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
+            }
+
+            response.Breakdown.Add(currentBreakdown);
+
+            return response;
+        }
+
+        private static StampDutyResponse CalculateAdditionalStampDuty(double amount)
+        {
+            StampDutyBreakdown currentBreakdown;
+
+            var response = new StampDutyResponse
+            {
+                PurchasePrice = amount
+            };
+
+            currentBreakdown = new StampDutyBreakdown
+            {
+                Amount = amount < 250000 ? amount : 250000,
+                Percentage = 3,
+                Name = "Up to 250,000"
+            };
+
+            double taxableAmount;
+
+            if(amount > 0)
+            {
+                taxableAmount = currentBreakdown.Amount;
+
+                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
+            }
+            response.Breakdown.Add(currentBreakdown);
+
+            currentBreakdown = new StampDutyBreakdown
+            {
+                Percentage = 8,
+                Name = "Above 250,000 and up to 925,000"
+            };
+
+            if(amount > 250000)
+            {
+                taxableAmount = amount - 250000;
+
+                if(taxableAmount > 675000)
+                {
+                    taxableAmount = 675000;
+                }
+
+                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
+            }
+            response.Breakdown.Add(currentBreakdown);
+
+            currentBreakdown = new StampDutyBreakdown
+            {
+                Percentage = 13,
+                Name = "Above 925,000 and up to 1,500,000"
+            };
+
+            if(amount > 925000)
+            {
+                taxableAmount = amount - 925000;
+
+                if(taxableAmount > 575000)
+                {
+                    taxableAmount = 575000;
+                }
+
+                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
+            }
+            response.Breakdown.Add(currentBreakdown);
+
+            currentBreakdown = new StampDutyBreakdown
+            {
+                Name = "Above 1,500,000",
+                Percentage = 15,
+            };
+
+            if(amount > 1500000)
+            {
+                taxableAmount = amount - 1500000;
+
+                currentBreakdown.Amount = taxableAmount;
+                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
+            }
+            response.Breakdown.Add(currentBreakdown);   
+
+            return response;
         }
 
         private static StampDutyResponse CalculateMainTaxStampDuty(double amount)
@@ -29,27 +242,27 @@ namespace ChrisUsher.MoveMate.API.Services.StampDuty
 
             response.Breakdown.Add(new StampDutyBreakdown
             {
-                Amount = amount < 225000 ? amount : 225000,
+                Amount = amount < 250000 ? amount : 250000,
                 TaxDue = 0,
                 Percentage = 0,
-                Name = "Up to 225,000"
+                Name = "Up to 250,000"
             });
 
             currentBreakdown = new StampDutyBreakdown
             {
-                Name = "Above 225,000 and up to 400,000",
-                Percentage = 6,
+                Name = "Above 250,000 and up to 925,000",
+                Percentage = 5,
             };
 
             double taxableAmount;
 
-            if (amount > 225000)
+            if (amount > 250000)
             {
-                taxableAmount = amount - 225000;
+                taxableAmount = amount - 250000;
 
-                if(taxableAmount > 175000)
+                if(taxableAmount > 675000)
                 {
-                    taxableAmount = 175000;
+                    taxableAmount = 675000;
                 }
 
                 currentBreakdown.Amount = taxableAmount;
@@ -59,37 +272,17 @@ namespace ChrisUsher.MoveMate.API.Services.StampDuty
 
             currentBreakdown = new StampDutyBreakdown
             {
-                Name = "Above 400,000 and up to 750,000",
-                Percentage = 7.5,
-            };
-
-            if(amount > 400000)
-            {
-                taxableAmount = amount - 400000;
-
-                if(taxableAmount > 350000)
-                {
-                    taxableAmount = 350000;
-                }
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "Above 750,000 and up to 1,500,000",
+                Name = "Above 925,000 and up to 1,500,000",
                 Percentage = 10,
             };
 
-            if(amount > 750000)
+            if(amount > 925000)
             {
-                taxableAmount = amount - 750000;
+                taxableAmount = amount - 925000;
 
-                if(taxableAmount > 750000)
+                if(taxableAmount > 575000)
                 {
-                    taxableAmount = 750000;
+                    taxableAmount = 575000;
                 }
 
                 currentBreakdown.Amount = taxableAmount;
@@ -106,202 +299,6 @@ namespace ChrisUsher.MoveMate.API.Services.StampDuty
             if(amount > 1500000)
             {
                 taxableAmount = amount - 1500000;
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            return response;
-        }
-
-        private static StampDutyResponse CalculateHigherTaxStampDuty(double amount)
-        {
-            StampDutyBreakdown currentBreakdown;
-
-            var response = new StampDutyResponse
-            {
-                PurchasePrice = amount
-            };
-
-            double taxableAmount;
-
-            taxableAmount = amount < 180000 ? amount : 180000;
-
-            response.Breakdown.Add(new StampDutyBreakdown
-            {
-                Amount = taxableAmount,
-                TaxDue = Math.Round(taxableAmount / 100 * 4, 2),
-                Percentage = 4,
-                Name = "Up to 180,000"
-            });
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "Above 180,000 and up to 250,000",
-                Percentage = 7.5,
-            };
-
-            if (amount > 180000)
-            {
-                taxableAmount = amount - 180000;
-
-                if(taxableAmount > 70000)
-                {
-                    taxableAmount = 70000;
-                }
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "250,000 and up to 400,000",
-                Percentage = 9,
-            };
-
-            if(amount > 250000)
-            {
-                taxableAmount = amount - 250000;
-
-                if(taxableAmount > 150000)
-                {
-                    taxableAmount = 150000;
-                }
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "Above 400,000 and up to 750,000",
-                Percentage = 11.5,
-            };
-
-            if(amount > 400000)
-            {
-                taxableAmount = amount - 400000;
-
-                if(taxableAmount > 350000)
-                {
-                    taxableAmount = 350000;
-                }
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "Above 750,000 and up to 1,500,000",
-                Percentage = 14,
-            };
-
-            if(amount > 750000)
-            {
-                taxableAmount = amount - 750000;
-
-                if(taxableAmount > 750000)
-                {
-                    taxableAmount = 750000;
-                }
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "Above 1,500,000",
-                Percentage = 16,
-            };
-
-            if(amount > 1500000)
-            {
-                taxableAmount = amount - 1500000;
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            return response;
-        }    
-    
-        private static StampDutyResponse CalculateNonResidentialStampDuty(double amount)
-        {
-            StampDutyBreakdown currentBreakdown;
-
-            var response = new StampDutyResponse
-            {
-                PurchasePrice = amount
-            };
-
-            response.Breakdown.Add(new StampDutyBreakdown
-            {
-                Amount = amount < 225000 ? amount : 225000,
-                TaxDue = 0,
-                Percentage = 0,
-                Name = "Up to 225,000"
-            });
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "Above 225,000 and up to 250,000",
-                Percentage = 1,
-            };
-
-            double taxableAmount;
-
-            if (amount > 225000)
-            {
-                taxableAmount = amount - 225000;
-
-                if(taxableAmount > 25000)
-                {
-                    taxableAmount = 25000;
-                }
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "Above 250,000 and up to 1,000,000",
-                Percentage = 5,
-            };
-
-            if(amount > 250000)
-            {
-                taxableAmount = amount - 250000;
-
-                if(taxableAmount > 750000)
-                {
-                    taxableAmount = 750000;
-                }
-
-                currentBreakdown.Amount = taxableAmount;
-                currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);
-            }
-            response.Breakdown.Add(currentBreakdown);
-
-            currentBreakdown = new StampDutyBreakdown
-            {
-                Name = "Above 1,000,000",
-                Percentage = 6,
-            };
-
-            if(amount > 1000000)
-            {
-                taxableAmount = amount - 1000000;
 
                 currentBreakdown.Amount = taxableAmount;
                 currentBreakdown.TaxDue = Math.Round(taxableAmount / 100 * currentBreakdown.Percentage, 2);

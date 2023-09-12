@@ -5,11 +5,11 @@ using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
 namespace Services.Tests.StampDuty
 {
     [TestFixture]
-    public class StampDutyServiceTests
+    public class StampDutyServiceWalesTests
     {
         private readonly StampDutyService _stampDutyService;
 
-        public StampDutyServiceTests()
+        public StampDutyServiceWalesTests()
         {
             _stampDutyService = ServiceTestsCommon.Services.GetService<StampDutyService>();
         }
