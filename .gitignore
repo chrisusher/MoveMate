@@ -403,3 +403,5 @@ FodyWeavers.xsd
 local.settings.json
 
 .env
+
+*.lock.hcl
