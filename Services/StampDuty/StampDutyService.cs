@@ -32,6 +32,7 @@ namespace ChrisUsher.MoveMate.API.Services.StampDuty
             {
                 UKRegionType.Wales => WalesStampDutyService.CalculateStampDuty(amount, stampDutyRequest),
                 UKRegionType.England => EnglandStampDutyService.CalculateStampDuty(amount, stampDutyRequest),
+                UKRegionType.Scotland => ScotlandStampDutyService.CalculateStampDuty(amount, stampDutyRequest),
                 
                 _ => throw new Exception($"Location : {stampDutyRequest.Location} is not yet supported by this Function."),
             };
