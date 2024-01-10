@@ -23,9 +23,8 @@ var host = new HostBuilder()
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true
         };
-        options.Converters.Add(new JsonStringEnumConverter());
 
-        worker.Serializer = new JsonObjectSerializer(options);
+        worker.Serializer = new JsonObjectSerializer(ServicesCommon.JsonOptions);
     })
     .ConfigureOpenApi()
     .ConfigureServices(services =>
@@ -44,7 +43,7 @@ var host = new HostBuilder()
             #endif
         });
 
-        services.AddMoveMateServices();
+        services.AddMoveMateServices(config);
     })
     .Build();
 

@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using ChrisUsher.MoveMate.API.Database;
 using ChrisUsher.MoveMate.API.Services;
 using ChrisUsher.MoveMate.API.Services.Accounts;
@@ -5,10 +6,11 @@ using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Services.Tests
 {
-    public class ServiceTestsCommon
+    public static class ServiceTestsCommon
     {
         private static Account _account;
         private static Property _purchaseProperty;
@@ -49,13 +51,15 @@ namespace Services.Tests
             {
                 if (_services == null)
                 {
-                    _services = RegisterServices();
+                    _services = RegisterServicesAsync().Result;
                 }
                 return _services;
             }
         }
 
-        private static ServiceProvider RegisterServices()
+        public static IConfigurationRoot Configuration { get; internal set; }
+
+        private static async Task<ServiceProvider> RegisterServicesAsync()
         {
             var services = new ServiceCollection();
 
@@ -73,9 +77,14 @@ namespace Services.Tests
 #endif
             });
 
-            services.AddMoveMateServices();
+            services.AddMoveMateServices(Configuration);
 
-            return services.BuildServiceProvider();
+            var serviceCollection = services.BuildServiceProvider();
+
+            var blobServiceClient = serviceCollection.GetRequiredService<BlobServiceClient>();
+            await blobServiceClient.CreateBlobContainerAsync("outputcache");
+
+            return serviceCollection;
         }
     }
 }
