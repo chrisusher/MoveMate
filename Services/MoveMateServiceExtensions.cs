@@ -6,14 +6,25 @@ using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.Reports;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using ChrisUsher.MoveMate.API.Services.Costs;
+using Microsoft.Extensions.Azure;
 
 namespace ChrisUsher.MoveMate.API.Services
 {
     public static class MoveMateServiceExtensions
     {
-        public static IServiceCollection AddMoveMateServices(this IServiceCollection services)
+        public static IServiceCollection AddMoveMateServices(this IServiceCollection services, IConfiguration configuration)
         {
+            #region Azure Services
+
+            services.AddAzureClients(config => 
+            {
+                config.AddBlobServiceClient(configuration.GetConnectionString("AzureStorage"));
+            });
+
+            #endregion
+
             #region Repositories
             
             services.AddSingleton<AccountRepository>();
