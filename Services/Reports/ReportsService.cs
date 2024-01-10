@@ -1,3 +1,5 @@
+using System.Text;
+using Azure.Storage.Blobs;
 using ChrisUsher.MoveMate.API.Services.Accounts;
 using ChrisUsher.MoveMate.API.Services.Costs;
 using ChrisUsher.MoveMate.API.Services.Mortgages;
@@ -21,6 +23,7 @@ public class ReportsService
     private readonly MortgagePaymentService _mortgagePaymentService;
     private readonly CostService _costsService;
     private readonly StampDutyService _stampDutyService;
+    private readonly BlobContainerClient _containerClient;
 
     public ReportsService(
         AccountService accountService,
@@ -29,7 +32,8 @@ public class ReportsService
         InterestService interestService,
         MortgagePaymentService mortgagePaymentService,
         CostService costsService,
-        StampDutyService stampDutyService
+        StampDutyService stampDutyService,
+        BlobServiceClient blobServiceClient
     )
     {
         _accountService = accountService;
@@ -39,6 +43,7 @@ public class ReportsService
         _mortgagePaymentService = mortgagePaymentService;
         _costsService = costsService;
         _stampDutyService = stampDutyService;
+        _containerClient = blobServiceClient.GetBlobContainerClient("outputcache");
     }
 
     public async Task<PropertyViabilityReport> GetPropertyViabilityReportAsync(Property property, PropertyViabilityReportRequest request)
@@ -121,6 +126,79 @@ public class ReportsService
         return report;
     }
 
+    public async Task<SavingsReport> GetSavingReportAsync(Guid accountId, CaseType caseType)
+    {
+        var blobName = $"{DateTime.UtcNow.ToString("yyy-MM-dd")}.json";
+        var fullBlobName = $"saving-reports/{blobName}";
+
+        if (_containerClient.GetBlobs().Any(x => x.Name.Contains(blobName))
+        )
+        {
+            var blobClient = _containerClient.GetBlobClient(fullBlobName);
+
+            using (var stream = await blobClient.OpenReadAsync())
+            {
+                return await JsonSerializer.DeserializeAsync<SavingsReport>(stream, ServicesCommon.JsonOptions);
+            }
+        }
+
+        var totalBalance = 0.0;
+
+        var report = new SavingsReport
+        {
+            Savings = (await _savingsService.GetSavingsAccountsAsync(accountId))
+                .Select(ReportSavingsAccount.FromSavingsAccount)
+                .ToList()
+        };
+
+        for (int index = 0; index < report.Savings.Count; index++)
+        {
+            var savingsAccount = report.Savings[index];
+
+            if (savingsAccount.Fluctuations != null)
+            {
+                switch (caseType)
+                {
+                    case CaseType.MiddleCase:
+                        report.Savings[index].CurrentBalance = Math.Round((savingsAccount.Fluctuations.WorstCase + savingsAccount.Fluctuations.BestCase) / 2, 2);
+                        break;
+                    case CaseType.WorstCase:
+                        report.Savings[index].CurrentBalance += savingsAccount.Fluctuations.WorstCase;
+                        break;
+                    case CaseType.BestCase:
+                        report.Savings[index].CurrentBalance += savingsAccount.Fluctuations.BestCase;
+                        break;
+                }
+                totalBalance += report.Savings[index].CurrentBalance;
+                continue;
+            }
+
+            if (savingsAccount.Balances.Any())
+            {
+                report.Savings[index].CurrentBalance = savingsAccount.Balances
+                    .OrderBy(x => x.Created)
+                    .Last()
+                    .Balance;
+
+                totalBalance += report.Savings[index].CurrentBalance;
+                continue;
+            }
+
+            report.Savings[index].CurrentBalance = savingsAccount.InitialBalance;
+            totalBalance += report.Savings[index].CurrentBalance;
+        }
+        report.TotalSavings = totalBalance;
+
+        var jsonContent = await SerializeAsync(report);
+
+        using (MemoryStream stream = new(Encoding.UTF8.GetBytes(jsonContent)))
+        {
+            await _containerClient.UploadBlobAsync(fullBlobName, stream);
+        }
+
+        return report;
+    }
+
     private List<MonthlyMortgagePayment> CalculateMonthlyPayments(double purchasePrice, double totalSavings, double equity, double interestRate, int years)
     {
         var monthlyPayments = new List<MonthlyMortgagePayment>();
@@ -193,5 +271,17 @@ public class ReportsService
         }
 
         return calculatedSavings;
+    }
+
+    private async Task<string> SerializeAsync<T>(T objectToSerialise)
+    {
+        using var stream = new MemoryStream();
+
+        await JsonSerializer.SerializeAsync(stream, objectToSerialise, ServicesCommon.JsonOptions);
+
+        stream.Position = 0;
+        using var reader = new StreamReader(stream);
+
+        return await reader.ReadToEndAsync();
     }
 }
