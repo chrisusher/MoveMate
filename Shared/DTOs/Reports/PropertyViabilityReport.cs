@@ -10,9 +10,6 @@ namespace ChrisUsher.MoveMate.Shared.DTOs.Reports
         [JsonPropertyName("estimatedSaleDate")]
         public DateTime? SaleDate { get; set; }
 
-        [JsonPropertyName("reportDate")]
-        public DateTime ReportDate => DateTime.UtcNow;
-
         [JsonPropertyName("totalSavings")]
         public double TotalSavings => Math.Round(SavingsAccounts.Sum(x => x.InitialBalance), 2);
 

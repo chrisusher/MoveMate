@@ -2,11 +2,8 @@ using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 
 namespace ChrisUsher.MoveMate.Shared.DTOs.Reports
 {
-    public class SavingsReport
+    public class SavingsReport : ReportBase
     {
-        [JsonPropertyName("reportDate")]
-        public DateTime ReportDate => DateTime.UtcNow;
-
         [JsonPropertyName("totalSavings")]
         public double TotalSavings { get; set; } = 0;
 

@@ -2,7 +2,7 @@ using ChrisUsher.MoveMate.Shared.Enums;
 
 namespace ChrisUsher.MoveMate.Shared.DTOs.Reports
 {
-    public class PropertyViabilityReportRequest
+    public class PropertyViabilityReportRequest : ReportBase
     {
         [JsonPropertyName("interestRate")]
         public double InterestRate { get; set; }

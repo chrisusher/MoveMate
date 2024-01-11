@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using Azure.Storage.Blobs;
 using ChrisUsher.MoveMate.API.Services.Accounts;
@@ -45,6 +46,8 @@ public class ReportsService
         _stampDutyService = stampDutyService;
         _containerClient = blobServiceClient.GetBlobContainerClient("outputcache");
     }
+
+    #region Public Methods
 
     public async Task<PropertyViabilityReport> GetPropertyViabilityReportAsync(Property property, PropertyViabilityReportRequest request)
     {
@@ -129,7 +132,7 @@ public class ReportsService
     public async Task<SavingsReport> GetSavingReportAsync(Guid accountId, CaseType caseType)
     {
         var blobName = $"{DateTime.UtcNow.ToString("yyy-MM-dd")}.json";
-        var fullBlobName = $"saving-reports/{blobName}";
+        var fullBlobName = $"saving-reports/{accountId}/{blobName}";
 
         if (_containerClient.GetBlobs().Any(x => x.Name.Contains(blobName))
         )
@@ -198,6 +201,45 @@ public class ReportsService
 
         return report;
     }
+
+    public async Task<SavingsOverTimeReport> GetSavingsOverTimeReportAsync(Guid accountId)
+    {
+        var report = new SavingsOverTimeReport();
+        var allBlobs = _containerClient.GetBlobs(prefix: $"saving-reports/{accountId}/");
+
+        foreach(var blob in allBlobs)
+        {
+            var blobClient = _containerClient.GetBlobClient(blob.Name);
+
+            using (var stream = await blobClient.OpenReadAsync())
+            {
+                var reportEntry = await JsonSerializer.DeserializeAsync<SavingsReport>(stream, ServicesCommon.JsonOptions);
+
+                // var fileName = blob.Name.Substring(blob.Name.LastIndexOf("/"));
+                var fileNameWithoutPath = Path.GetFileNameWithoutExtension(blob.Name);
+
+                report.Summaries.Add(new()
+                {
+                    SummaryDate = DateTime.ParseExact(fileNameWithoutPath, "yyyy-MM-dd", CultureInfo.CurrentCulture)
+                });
+
+                foreach(var saving in reportEntry.Savings)
+                {
+                    report.Summaries.Last().Savings.Add(new SavingsSummary
+                    {
+                        CurrentBalance = saving.CurrentBalance,
+                        Name = saving.Name
+                    });
+                }
+            }
+        }
+
+        return report;  
+    }
+
+    #endregion
+
+    #region Private Methods
 
     private List<MonthlyMortgagePayment> CalculateMonthlyPayments(double purchasePrice, double totalSavings, double equity, double interestRate, int years)
     {
@@ -284,4 +326,6 @@ public class ReportsService
 
         return await reader.ReadToEndAsync();
     }
+
+    #endregion
 }
