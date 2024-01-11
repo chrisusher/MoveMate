@@ -6,43 +6,34 @@ using Microsoft.OpenApi.Models;
 
 namespace ChrisUsher.MoveMate.API.Functions.Reports;
 
-public class SavingsReportFunction : HttpFunction
+public class SavingsOverTimeReportFunction : HttpFunction
 {
     private readonly ReportsService _reportsService;
-    private readonly ILogger<SavingsReportFunction> _logger;
+    private readonly ILogger<SavingsOverTimeReportFunction> _logger;
 
-    public SavingsReportFunction(
+    public SavingsOverTimeReportFunction(
         ILoggerFactory loggerFactory,
         ReportsService reportsService
     )
     {
         _reportsService = reportsService;
-        _logger = loggerFactory.CreateLogger<SavingsReportFunction>();
+        _logger = loggerFactory.CreateLogger<SavingsOverTimeReportFunction>();
     }
 
-    [OpenApiOperation(operationId: "SavingsReportFunction", tags: new[] { "Reports" }, Summary = "")]
-    [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsReport))]
+    [OpenApiOperation(operationId: "SavingsOverTimeReportFunction", tags: new[] { "Reports" }, Summary = "")]
+    [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsOverTimeReport))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
-    [OpenApiParameter(name: "caseModel", In = ParameterLocation.Query, Required = true, Type = typeof(CaseType))]
-    [Function("SavingsReportFunction")]
-    public async Task<HttpResponseData> CreateReportAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Reports/SavingsReport/{accountId}")] HttpRequestData request,
-        Guid accountId,
-        string caseModel)
+    [Function("SavingsOverTimeReportFunction")]
+    public async Task<HttpResponseData> CreateReportAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Reports/SavingsReportOverTime/{accountId}")] HttpRequestData request,
+        Guid accountId)
     {
         HttpResponseData response;
 
         try
         {
-            var caseType = CaseType.MiddleCase;
-
-            if (!string.IsNullOrEmpty(caseModel))
-            {
-                caseType = Enum.Parse<CaseType>(caseModel, true);
-            }
-
             response = request.CreateResponse(HttpStatusCode.OK);
 
-            var report = await _reportsService.GetSavingReportAsync(accountId, caseType);
+            var report = await _reportsService.GetSavingsOverTimeReportAsync(accountId);
             
             await response.WriteAsJsonAsync(report);
         }
