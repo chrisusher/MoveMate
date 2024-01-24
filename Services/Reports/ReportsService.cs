@@ -190,7 +190,7 @@ public class ReportsService
             report.Savings[index].CurrentBalance = savingsAccount.InitialBalance;
             totalBalance += report.Savings[index].CurrentBalance;
         }
-        report.TotalSavings = totalBalance;
+        report.TotalSavings = Math.Round(totalBalance, 2);
 
         var jsonContent = await SerializeAsync(report);
 
