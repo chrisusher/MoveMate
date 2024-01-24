@@ -1,6 +1,7 @@
 using ChrisUsher.MoveMate.API.Services;
 using ChrisUsher.MoveMate.API.Services.Reports;
 using ChrisUsher.MoveMate.API.Services.Savings;
+using ChrisUsher.MoveMate.Shared;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 
 namespace Services.Tests.Reports
@@ -36,6 +37,16 @@ namespace Services.Tests.Reports
             var report = await _reportService.GetSavingReportAsync(ServiceTestsCommon.DefaultAccount.AccountId, caseType);
 
             Assert.That(report.TotalSavings, Is.GreaterThan(0), "Report Total Savings was not greater than 0.");
+        }
+
+        [Test]
+        public async Task GetSavingReportAsync_TotalSavingsRounded()
+        {
+            var report = await _reportService.GetSavingReportAsync(ServiceTestsCommon.DefaultAccount.AccountId, CaseType.MiddleCase);
+
+            var decimalPlaces = CurrencyLogic.CountDecimalPlaces(report.TotalSavings);
+
+            Assert.That(decimalPlaces, Is.LessThanOrEqualTo(2), "Total Savings was not rounded to 2 decimal places.");
         }
     }
 }
