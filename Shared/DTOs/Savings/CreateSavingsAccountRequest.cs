@@ -1,4 +1,6 @@
-﻿namespace ChrisUsher.MoveMate.Shared.DTOs.Savings;
+﻿using ChrisUsher.MoveMate.Shared.Enums;
+
+namespace ChrisUsher.MoveMate.Shared.DTOs.Savings;
 
 public class CreateSavingsAccountRequest
 {
@@ -17,6 +19,9 @@ public class CreateSavingsAccountRequest
     [JsonPropertyName("fluctuations")]
     public Fluctuation Fluctuations { get; set; }
 
+    [JsonPropertyName("savingType")]
+    public SavingType SavingType { get; set; } = SavingType.ISA;
+
     public SavingsAccount ToSavingsAccount()
     {
         return new SavingsAccount
@@ -25,7 +30,8 @@ public class CreateSavingsAccountRequest
             InitialBalance = InitialBalance,
             SavingsRate = SavingsRate,
             MonthlySavingsAmount = MonthlySavingsAmount,
-            Fluctuations = Fluctuations
+            Fluctuations = Fluctuations,
+            SavingType = SavingType
         };
     }
 }

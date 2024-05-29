@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
+using ChrisUsher.MoveMate.Shared.Enums;
 
 namespace ChrisUsher.MoveMate.API.Services.Database.Savings
 {
@@ -27,6 +28,8 @@ namespace ChrisUsher.MoveMate.API.Services.Database.Savings
 
         public double InitialBalance { get; set; }
 
+        public SavingType SavingType { get; set; }
+
         public SavingsAccount ToSavingsAccount()
         {
             return new SavingsAccount
@@ -40,7 +43,8 @@ namespace ChrisUsher.MoveMate.API.Services.Database.Savings
                 IsDeleted = IsDeleted,
                 Created = Created,
                 Balances = Balances,
-                Fluctuations = Fluctuations
+                Fluctuations = Fluctuations,
+                SavingType = SavingType
             };
         }
     }
