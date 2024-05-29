@@ -2,12 +2,17 @@ using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
 using ChrisUsher.MoveMate.Shared.Enums;
+using MongoDB.Bson;
 
 namespace ChrisUsher.MoveMate.API.Services.Database.Properties
 {
     public class PropertyTable
     {
+#if RELEASE
         [Key]
+#elif DEBUG
+        public ObjectId _id { get; set; }
+#endif
         public Guid PropertyId { get; set; } = Guid.NewGuid();
 
         public Guid AccountId { get; set; }

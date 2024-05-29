@@ -1,11 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
+using MongoDB.Bson;
 
 namespace ChrisUsher.MoveMate.API.Services.Database.Accounts
 {
     public class AccountTable
     {
+#if RELEASE
         [Key]
+#elif DEBUG
+        public ObjectId _id { get; set; }
+#endif
         public Guid AccountId { get; set; } = Guid.NewGuid();
 
         public string Email { get; set; }

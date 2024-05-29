@@ -2,12 +2,17 @@ using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 using ChrisUsher.MoveMate.Shared.Enums;
+using MongoDB.Bson;
 
 namespace ChrisUsher.MoveMate.API.Services.Database.Savings
 {
     public class SavingsTable
     {
+#if RELEASE
         [Key]
+#elif DEBUG
+        public ObjectId _id { get; set; }
+#endif
         public Guid SavingsId { get; set; } = Guid.NewGuid();
 
         public Guid AccountId { get; set; }

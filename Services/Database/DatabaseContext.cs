@@ -3,6 +3,8 @@ using ChrisUsher.MoveMate.API.Services.Database.Costs;
 using ChrisUsher.MoveMate.API.Services.Database.Properties;
 using ChrisUsher.MoveMate.API.Services.Database.Savings;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.EntityFrameworkCore;
+using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace ChrisUsher.MoveMate.API.Database;
 
@@ -19,6 +21,8 @@ public class DatabaseContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+#if RELEASE
 
         modelBuilder.Entity<AccountTable>()
             .ToContainer("Accounts")
@@ -39,6 +43,24 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<StockTable>()
             .ToContainer("Stocks")
             .HasPartitionKey("SavingsId");
+
+#elif DEBUG
+
+        modelBuilder.Entity<AccountTable>()
+            .ToCollection("Accounts");
+
+        modelBuilder.Entity<PropertyTable>()
+            .ToCollection("Properties");
+
+        modelBuilder.Entity<SavingsTable>()
+            .ToCollection("Savings");
+
+        modelBuilder.Entity<CostTable>()
+            .ToCollection("Costs");
+
+        modelBuilder.Entity<StockTable>()
+            .ToCollection("Stocks");
+#endif
     }
 
     public DbSet<AccountTable> Accounts { get; set; }

@@ -1,14 +1,12 @@
 using dotenv.net;
-using Ductus.FluentDocker.Builders;
-using Ductus.FluentDocker.Services;
 using Microsoft.Extensions.Configuration;
+using DockerBuilder = Ductus.FluentDocker.Builders.Builder;
 
 namespace Services.Tests
 {
     [SetUpFixture]
     public class AssemblyLifecycle
     {
-        private static IContainerService _storageDocker;
 
         [OneTimeSetUp]
         public static void AssemblySetup()
@@ -16,13 +14,12 @@ namespace Services.Tests
 #if DEBUG
             DotEnv.Load(new DotEnvOptions(probeForEnv: true, ignoreExceptions: false));
 #endif
-            _storageDocker = new Builder()
+            var builder = new DockerBuilder()
                 .UseContainer()
-                .UseImage("mcr.microsoft.com/azure-storage/azurite:latest")
-                .ExposePort(10000, 10000)
-                .Build()
-                .Start();
-            _storageDocker.StopOnDispose = true;
+                .UseCompose()
+                .FromFile("docker-compose.yml");
+
+            ServiceTestsCommon.DockerServices = builder.Build().Start();
 
             ServiceTestsCommon.Configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
@@ -32,7 +29,7 @@ namespace Services.Tests
         [OneTimeTearDown]
         public void Teardown()
         {
-            _storageDocker?.Dispose();
+            ServiceTestsCommon.DockerServices?.Dispose();
         }
     }
 }

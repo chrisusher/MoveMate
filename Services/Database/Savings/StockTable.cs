@@ -1,11 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings.Stocks;
+using MongoDB.Bson;
 
 namespace ChrisUsher.MoveMate.API.Services.Database.Savings;
 
 public class StockTable
 {
-    [Key]
+#if RELEASE
+        [Key]
+#elif DEBUG
+    public ObjectId _id { get; set; }
+#endif
     public Guid SavingsId { get; set; } = Guid.NewGuid();
 
     public Guid StockId { get; set; }

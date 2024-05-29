@@ -1,10 +1,12 @@
 using Azure.Storage.Blobs;
+using Bogus;
 using ChrisUsher.MoveMate.API.Database;
 using ChrisUsher.MoveMate.API.Services;
 using ChrisUsher.MoveMate.API.Services.Accounts;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
+using Ductus.FluentDocker.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -12,9 +14,12 @@ namespace Services.Tests
 {
     public static class ServiceTestsCommon
     {
+        private static Faker _faker;
         private static Account _account;
         private static Property _purchaseProperty;
         private static ServiceProvider _services;
+
+        public static IConfigurationRoot Configuration { get; internal set; }
 
         public static Account DefaultAccount
         {
@@ -23,8 +28,10 @@ namespace Services.Tests
                 if (_account == null)
                 {
                     _account = Services.GetService<AccountService>()
-                        .GetAccountAsync(Guid.Parse("7570e5af-0e67-40b0-af4b-80ac362de7e1"))
-                        .Result;
+                        .CreateAccountAsync(new()
+                        {
+                            Email = Faker.Internet.Email()
+                        }).Result;
                 }
                 return _account;
             }
@@ -45,6 +52,20 @@ namespace Services.Tests
             }
         }
 
+        public static ICompositeService DockerServices { get; internal set; }
+
+        public static Faker Faker
+        {
+            get
+            {
+                if (_faker == null)
+                {
+                    _faker = new Faker();
+                }
+                return _faker;
+            }
+        }
+
         public static ServiceProvider Services
         {
             get
@@ -57,15 +78,13 @@ namespace Services.Tests
             }
         }
 
-        public static IConfigurationRoot Configuration { get; internal set; }
-
         private static async Task<ServiceProvider> RegisterServicesAsync()
         {
             var services = new ServiceCollection();
 
             services.AddDbContext<DatabaseContext>(options =>
             {
-                options.UseCosmos(Environment.GetEnvironmentVariable("MOVEMATE_COSMOS_CONNECTIONSTRING"), "movemate-test");
+                options.UseMongoDB(Configuration.GetConnectionString("Database"), "movemate-test");
 
                 options.EnableSensitiveDataLogging();
 
