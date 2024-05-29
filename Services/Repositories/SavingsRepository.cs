@@ -1,5 +1,5 @@
 ﻿using ChrisUsher.MoveMate.API.Database;
-using ChrisUsher.MoveMate.API.Database.Savings;
+using ChrisUsher.MoveMate.API.Services.Database.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 using Microsoft.EntityFrameworkCore;
 

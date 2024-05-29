@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 
-namespace ChrisUsher.MoveMate.API.Database.Accounts
+namespace ChrisUsher.MoveMate.API.Services.Database.Accounts
 {
     public class AccountTable
     {

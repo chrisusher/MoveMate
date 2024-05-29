@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 
-namespace ChrisUsher.MoveMate.API.Database.Savings
+namespace ChrisUsher.MoveMate.API.Services.Database.Savings
 {
     public class SavingsTable
     {

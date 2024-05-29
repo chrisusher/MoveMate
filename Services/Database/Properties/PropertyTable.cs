@@ -3,7 +3,7 @@ using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
 using ChrisUsher.MoveMate.Shared.Enums;
 
-namespace ChrisUsher.MoveMate.API.Database.Properties
+namespace ChrisUsher.MoveMate.API.Services.Database.Properties
 {
     public class PropertyTable
     {
@@ -42,7 +42,7 @@ namespace ChrisUsher.MoveMate.API.Database.Properties
                 Created = Created
             };
 
-            if(Equity != null)
+            if (Equity != null)
             {
                 property.Equity = Equity;
             }

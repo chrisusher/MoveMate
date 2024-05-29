@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs;
 using ChrisUsher.MoveMate.Shared.DTOs.Costs;
 
-namespace ChrisUsher.MoveMate.API.Database.Costs
+namespace ChrisUsher.MoveMate.API.Services.Database.Costs
 {
     public class CostTable
     {
