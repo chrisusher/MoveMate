@@ -1,4 +1,5 @@
 using ChrisUsher.MoveMate.API.Services.Reports;
+using ChrisUsher.MoveMate.API.Services.Savings;
 
 namespace Services.Tests.Reports
 {
@@ -6,10 +7,20 @@ namespace Services.Tests.Reports
     public class SavingsOverTimeReportTests
     {
         private ReportsService ReportService => ServiceTestsCommon.Services.GetService<ReportsService>();
+        private SavingsService SavingsService => ServiceTestsCommon.Services.GetService<SavingsService>();
 
         [OneTimeSetUp]
         public async Task ClassSetupAsync()
         {
+            await SavingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new()
+            {
+               Name = "Test Account",
+               SavingType = SavingType.ISA,
+               InitialBalance = 10_000,
+               MonthlySavingsAmount = 100,
+               SavingsRate = 5
+            });
+
             await ReportService.GetSavingReportAsync(ServiceTestsCommon.DefaultAccount.AccountId, CaseType.MiddleCase);
         }
 

@@ -24,8 +24,10 @@ namespace Services.Tests.Reports
             await _savingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest
             {
                 Name = "Test Account",
-                InitialBalance = 10000,
+                InitialBalance = 10_000,
                 SavingsRate = 5,
+                SavingType = SavingType.ISA,
+                MonthlySavingsAmount = 100
             });
         }
 

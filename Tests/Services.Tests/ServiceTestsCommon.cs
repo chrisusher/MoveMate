@@ -16,6 +16,7 @@ namespace Services.Tests
     {
         private static Faker _faker;
         private static Account _account;
+        private static Property _currentProperty;
         private static Property _purchaseProperty;
         private static ServiceProvider _services;
 
@@ -34,6 +35,30 @@ namespace Services.Tests
                         }).Result;
                 }
                 return _account;
+            }
+        }
+
+        public static Property DefaultCurrentProperty
+        {
+            get
+            {
+                if (_currentProperty == null)
+                {
+                    _currentProperty = Services.GetService<PropertyService>()
+                        .CreatePropertyAsync(DefaultAccount.AccountId, new()
+                        {
+                            PropertyType = PropertyType.Current,
+                            Name = "Our House",
+                            MaxValue = 300_000,
+                            MinValue = 275_000,
+                            Equity = new()
+                            {
+                                RemainingMortgage = 100_000,
+                                Updated = DateTime.UtcNow
+                            }
+                        }).Result;
+                }
+                return _currentProperty;
             }
         }
 

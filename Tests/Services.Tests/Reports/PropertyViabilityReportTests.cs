@@ -16,6 +16,7 @@ namespace Services.Tests.Reports
         {
             _stampDutyService = ServiceTestsCommon.Services.GetService<StampDutyService>();
             _reportService = ServiceTestsCommon.Services.GetService<ReportsService>();
+            _ = ServiceTestsCommon.DefaultCurrentProperty;
         }
 
         [Test]
