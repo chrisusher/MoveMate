@@ -1,6 +1,4 @@
-﻿
-
-namespace ChrisUsher.MoveMate.Shared.DTOs.Savings.Stocks;
+﻿namespace ChrisUsher.MoveMate.Shared.DTOs.Savings.Stocks;
 
 public class StocksAndSharesDetails : UpdateStocksAndSharesRequest
 {

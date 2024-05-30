@@ -20,6 +20,8 @@ public class StockTable
 
     public bool IsActive { get; set; } = true;
 
+    public bool IsDeleted { get; set; }
+
     [Required]
     public DateTime StartDate { get; set; }
 
@@ -35,6 +37,7 @@ public class StockTable
             StockId = StockId,
             StockName = StockName,
             IsActive = IsActive,
+            IsDeleted = IsDeleted,
             StartDate = StartDate,
             Balances = Balances,
             MonthlySavingsAmount = MonthlySavingsAmount

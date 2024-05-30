@@ -25,7 +25,7 @@ public class CreateStocksAndSharesRequest
             StockName = StockName,
             IsActive = IsActive,
             StartDate = StartDate,
-            MonthlySavingsAmount = MonthlySavingsAmount
+            MonthlySavingsAmount = MonthlySavingsAmount,
         };
     }
 }

@@ -32,16 +32,28 @@ public class StockService
 
     public async Task<StocksAndSharesDetails> GetStockAsync(Guid savingsId, Guid stockId)
     {
-        var stock = await _stockRepo.GetStockAsync(savingsId, savingsId);
+        var stock = await _stockRepo.GetStockAsync(savingsId, stockId);
 
         return stock == null
             ? throw new DataNotFoundException($"No Stock or Share Details found in Stocks '{stockId}' with Savings Id '{savingsId}'")
             : stock.ToStocksAndSharesDetails();
     }
 
-    public async Task<StocksAndSharesDetails> UpdateSavingsAccountAsync(Guid accountId, Guid savingsId, Guid stockId, UpdateStocksAndSharesRequest request)
+    public async Task<List<StocksAndSharesDetails>> GetStocksAsync(Guid savingsId)
     {
+        var accounts = await _stockRepo.GetStocksAsync(savingsId);
+
+        return accounts
+            .Select(x => x.ToStocksAndSharesDetails())
+            .ToList();
+    }
+
+    public async Task<StocksAndSharesDetails> UpdateStockAsync(Guid accountId, Guid savingsId, Guid stockId, UpdateStocksAndSharesRequest request)
+    {
+        await GetStockAsync(savingsId, stockId);
+
         var stockDetails = request.ToStocksAndShares();
+        stockDetails.StockId = stockId;
 
         var stockTable = await _stockRepo.UpdateStockAsync(stockDetails);
 

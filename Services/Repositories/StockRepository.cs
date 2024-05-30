@@ -39,6 +39,15 @@ public class StockRepository
             .FirstOrDefaultAsync(x => x.SavingsId == savingsId && x.StockId == stockId);
     }
 
+    public async Task<List<StockTable>> GetStocksAsync(Guid savingsId)
+    {
+        return await _databaseContext.Stocks
+            .Where(x => x.SavingsId == savingsId
+                        && !x.IsDeleted)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
     public async Task<StockTable> UpdateStockAsync(StocksAndSharesDetails stockDetails)
     {
         var stockTable = await _databaseContext.Stocks.FirstAsync(x => x.StockId == stockDetails.StockId);
