@@ -12,7 +12,6 @@ public class UpdateStocksAndSharesRequest : CreateStocksAndSharesRequest
     {
         return new StocksAndSharesDetails
         {
-            SavingsId = SavingsId,
             StockName = StockName,
             IsActive = IsActive,
             StartDate = StartDate,

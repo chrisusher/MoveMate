@@ -14,11 +14,11 @@ public class StockRepository
         _databaseContext = databaseContext;
     }
 
-    public async Task<StockTable> CreateStockAsync(CreateStocksAndSharesRequest stockDetails)
+    public async Task<StockTable> CreateStockAsync(Guid savingsId, CreateStocksAndSharesRequest stockDetails)
     {
         var stock = new StockTable
         {
-            SavingsId = stockDetails.SavingsId,
+            SavingsId = savingsId,
             StockId = Guid.NewGuid(),
             StockName = stockDetails.StockName,
             IsActive = stockDetails.IsActive,
@@ -52,6 +52,7 @@ public class StockRepository
     {
         var stockTable = await _databaseContext.Stocks.FirstAsync(x => x.StockId == stockDetails.StockId);
 
+        stockTable.StockName = stockDetails.StockName;
         stockTable.IsActive = stockDetails.IsActive;
         stockTable.StartDate = stockDetails.StartDate;
         stockTable.MonthlySavingsAmount = stockDetails.MonthlySavingsAmount;

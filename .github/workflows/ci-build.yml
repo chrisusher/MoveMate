@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  BUILD_CONFIG: 'Release'
+  BUILD_CONFIG: 'Debug'
   MOVEMATE_COSMOS_CONNECTIONSTRING: ${{ secrets.MOVEMATE_COSMOS_CONNECTIONSTRING }}
 
 jobs:

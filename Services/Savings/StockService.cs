@@ -16,16 +16,16 @@ public class StockService
         _savingsService = savingsService;
     }
 
-    public async Task<StocksAndSharesDetails> CreateStockAsync(Guid accountId, CreateStocksAndSharesRequest stockDetailsRequest)
+    public async Task<StocksAndSharesDetails> CreateStockAsync(Guid accountId, Guid savingsId, CreateStocksAndSharesRequest stockDetailsRequest)
     {
-        var savingsAccount = await _savingsService.GetSavingsAccountAsync(accountId, stockDetailsRequest.SavingsId);
+        var savingsAccount = await _savingsService.GetSavingsAccountAsync(accountId, savingsId);
 
         if(savingsAccount.SavingType != SavingType.StocksAndShares)
         {
             throw new InvalidOperationException($"Savings Account '{savingsAccount.SavingsId}' is not of type Stocks and Shares");
         }
 
-        var stock = await _stockRepo.CreateStockAsync(stockDetailsRequest);
+        var stock = await _stockRepo.CreateStockAsync(savingsId, stockDetailsRequest);
 
         return stock.ToStocksAndSharesDetails();
     }

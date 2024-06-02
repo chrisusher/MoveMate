@@ -2,9 +2,6 @@
 
 public class CreateStocksAndSharesRequest
 {
-    [JsonPropertyName("savingsId")]
-    public Guid SavingsId { get; set; }
-
     [JsonPropertyName("stockName")]
     public string StockName { get; set; }
 
@@ -21,7 +18,6 @@ public class CreateStocksAndSharesRequest
     {
         return new StocksAndSharesDetails
         {
-            SavingsId = SavingsId,
             StockName = StockName,
             IsActive = IsActive,
             StartDate = StartDate,

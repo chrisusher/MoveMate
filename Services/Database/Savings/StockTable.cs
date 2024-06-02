@@ -33,7 +33,6 @@ public class StockTable
     {
         return new StocksAndSharesDetails
         {
-            SavingsId = SavingsId,
             StockId = StockId,
             StockName = StockName,
             IsActive = IsActive,

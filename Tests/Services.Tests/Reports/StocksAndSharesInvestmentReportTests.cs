@@ -33,9 +33,8 @@ public class StocksAndSharesInvestmentReportTests
             MonthlySavingsAmount = 100
         });
 
-        _positiveReturnStock = await _stocksService.CreateStockAsync(ServiceTestsCommon.DefaultAccount.AccountId, new()
+        _positiveReturnStock = await _stocksService.CreateStockAsync(ServiceTestsCommon.DefaultAccount.AccountId, stocksAndSharesAccount.SavingsId, new()
         {
-            SavingsId = stocksAndSharesAccount.SavingsId,
             StockName = "Test Stock",
             IsActive = true,
             StartDate = new(2020, 1, 1),
