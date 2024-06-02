@@ -1,5 +1,5 @@
 ﻿using ChrisUsher.MoveMate.API.Database;
-using ChrisUsher.MoveMate.API.Database.Savings;
+using ChrisUsher.MoveMate.API.Services.Database.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,7 +39,8 @@ public class SavingsRepository
             InitialBalance = account.InitialBalance,
             SavingsRate = account.SavingsRate,
             MonthlySavingsAmount = account.MonthlySavingsAmount,
-            Fluctuations = account.Fluctuations
+            Fluctuations = account.Fluctuations,
+            SavingType = account.SavingType
         };
         await _databaseContext.Savings.AddAsync(savingsTable);
 
@@ -73,6 +74,7 @@ public class SavingsRepository
         accountTable.IsDeleted = account.IsDeleted;
         accountTable.Name = account.Name;
         accountTable.Fluctuations = account.Fluctuations;
+        accountTable.SavingType = account.SavingType;
 
         _databaseContext.Savings.Update(accountTable);
 

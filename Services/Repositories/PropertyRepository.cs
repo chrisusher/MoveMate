@@ -1,5 +1,5 @@
 ﻿using ChrisUsher.MoveMate.API.Database;
-using ChrisUsher.MoveMate.API.Database.Properties;
+using ChrisUsher.MoveMate.API.Services.Database.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.Enums;
 using Microsoft.EntityFrameworkCore;

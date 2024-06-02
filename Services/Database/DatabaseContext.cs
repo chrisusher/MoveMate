@@ -1,8 +1,10 @@
-﻿using ChrisUsher.MoveMate.API.Database.Accounts;
-using ChrisUsher.MoveMate.API.Database.Costs;
-using ChrisUsher.MoveMate.API.Database.Properties;
-using ChrisUsher.MoveMate.API.Database.Savings;
+﻿using ChrisUsher.MoveMate.API.Services.Database.Accounts;
+using ChrisUsher.MoveMate.API.Services.Database.Costs;
+using ChrisUsher.MoveMate.API.Services.Database.Properties;
+using ChrisUsher.MoveMate.API.Services.Database.Savings;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.EntityFrameworkCore;
+using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace ChrisUsher.MoveMate.API.Database;
 
@@ -20,6 +22,8 @@ public class DatabaseContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+#if RELEASE
+
         modelBuilder.Entity<AccountTable>()
             .ToContainer("Accounts")
             .HasPartitionKey("AccountId");
@@ -35,6 +39,28 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<CostTable>()
             .ToContainer("Costs")
             .HasPartitionKey("AccountId");
+
+        modelBuilder.Entity<StockTable>()
+            .ToContainer("Stocks")
+            .HasPartitionKey("SavingsId");
+
+#elif DEBUG
+
+        modelBuilder.Entity<AccountTable>()
+            .ToCollection("Accounts");
+
+        modelBuilder.Entity<PropertyTable>()
+            .ToCollection("Properties");
+
+        modelBuilder.Entity<SavingsTable>()
+            .ToCollection("Savings");
+
+        modelBuilder.Entity<CostTable>()
+            .ToCollection("Costs");
+
+        modelBuilder.Entity<StockTable>()
+            .ToCollection("Stocks");
+#endif
     }
 
     public DbSet<AccountTable> Accounts { get; set; }
@@ -44,4 +70,6 @@ public class DatabaseContext : DbContext
     public DbSet<PropertyTable> Properties { get; set; }
 
     public DbSet<SavingsTable> Savings { get; set; }
+
+    public DbSet<StockTable> Stocks { get; set; }
 }

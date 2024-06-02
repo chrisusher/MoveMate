@@ -24,6 +24,7 @@ public class ReportsService
     private readonly MortgagePaymentService _mortgagePaymentService;
     private readonly CostService _costsService;
     private readonly StampDutyService _stampDutyService;
+    private readonly StockService _stockService;
     private readonly BlobContainerClient _containerClient;
 
     public ReportsService(
@@ -34,6 +35,7 @@ public class ReportsService
         MortgagePaymentService mortgagePaymentService,
         CostService costsService,
         StampDutyService stampDutyService,
+        StockService stockService,
         BlobServiceClient blobServiceClient
     )
     {
@@ -44,6 +46,7 @@ public class ReportsService
         _mortgagePaymentService = mortgagePaymentService;
         _costsService = costsService;
         _stampDutyService = stampDutyService;
+        _stockService = stockService;
         _containerClient = blobServiceClient.GetBlobContainerClient("outputcache");
     }
 
@@ -207,7 +210,7 @@ public class ReportsService
         var report = new SavingsOverTimeReport();
         var allBlobs = _containerClient.GetBlobs(prefix: $"saving-reports/{accountId}/");
 
-        foreach(var blob in allBlobs)
+        foreach (var blob in allBlobs)
         {
             var blobClient = _containerClient.GetBlobClient(blob.Name);
 
@@ -223,7 +226,7 @@ public class ReportsService
                     SummaryDate = DateTime.ParseExact(fileNameWithoutPath, "yyyy-MM-dd", CultureInfo.CurrentCulture)
                 });
 
-                foreach(var saving in reportEntry.Savings)
+                foreach (var saving in reportEntry.Savings)
                 {
                     report.Summaries.Last().Savings.Add(new SavingsSummary
                     {
@@ -234,7 +237,36 @@ public class ReportsService
             }
         }
 
-        return report;  
+        return report;
+    }
+
+    public async Task<StockInvestmentReport> GetStockInvestmentReportAsync(Guid accountId, Guid savingsId)
+    {
+        var stockSavingsAccount = await _savingsService.GetSavingsAccountAsync(accountId, savingsId);
+        
+        if (stockSavingsAccount == null)
+        {
+            throw new DataNotFoundException(message: "Savings account passed to StockInvestmentReport was not found.");
+        }
+
+        var stocksInAccountTask = _stockService.GetStocksAsync(stockSavingsAccount.SavingsId);
+
+        var report = new StockInvestmentReport();
+
+        foreach(var stock in await stocksInAccountTask)
+        {
+            var lastBalance = stock.Balances.Last();
+
+            report.Stocks.Add(new()
+            {
+                AmountInvested = lastBalance.AmountInvested,
+                StockId = stock.StockId,
+                StockName = stock.StockName,
+                CurrentValue = lastBalance.Balance,
+            });
+        }
+
+        return report;
     }
 
     #endregion

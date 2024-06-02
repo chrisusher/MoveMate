@@ -31,6 +31,7 @@ namespace ChrisUsher.MoveMate.API.Services
             services.AddSingleton<CostRepository>();
             services.AddSingleton<PropertyRepository>();
             services.AddSingleton<SavingsRepository>();
+            services.AddSingleton<StockRepository>();
 
             #endregion
 
@@ -44,6 +45,7 @@ namespace ChrisUsher.MoveMate.API.Services
             services.AddSingleton<ReportsService>();
             services.AddSingleton<SavingsService>();
             services.AddSingleton<StampDutyService>();
+            services.AddSingleton<StockService>();
         
             #endregion
 

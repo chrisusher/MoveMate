@@ -1,12 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
+using ChrisUsher.MoveMate.Shared.Enums;
+using MongoDB.Bson;
 
-namespace ChrisUsher.MoveMate.API.Database.Savings
+namespace ChrisUsher.MoveMate.API.Services.Database.Savings
 {
     public class SavingsTable
     {
+#if RELEASE
         [Key]
+#elif DEBUG
+        public ObjectId _id { get; set; }
+#endif
         public Guid SavingsId { get; set; } = Guid.NewGuid();
 
         public Guid AccountId { get; set; }
@@ -27,6 +33,8 @@ namespace ChrisUsher.MoveMate.API.Database.Savings
 
         public double InitialBalance { get; set; }
 
+        public SavingType SavingType { get; set; }
+
         public SavingsAccount ToSavingsAccount()
         {
             return new SavingsAccount
@@ -40,7 +48,8 @@ namespace ChrisUsher.MoveMate.API.Database.Savings
                 IsDeleted = IsDeleted,
                 Created = Created,
                 Balances = Balances,
-                Fluctuations = Fluctuations
+                Fluctuations = Fluctuations,
+                SavingType = SavingType
             };
         }
     }

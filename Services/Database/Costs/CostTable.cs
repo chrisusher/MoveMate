@@ -1,12 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs;
 using ChrisUsher.MoveMate.Shared.DTOs.Costs;
+using MongoDB.Bson;
 
-namespace ChrisUsher.MoveMate.API.Database.Costs
+namespace ChrisUsher.MoveMate.API.Services.Database.Costs
 {
     public class CostTable
     {
+#if RELEASE
         [Key]
+#elif DEBUG
+        public ObjectId _id { get; set; }
+#endif
         public Guid CostId { get; set; } = Guid.NewGuid();
 
         public Guid AccountId { get; set; }

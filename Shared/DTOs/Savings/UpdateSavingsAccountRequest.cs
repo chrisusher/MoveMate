@@ -24,7 +24,8 @@ public class UpdateSavingsAccountRequest : CreateSavingsAccountRequest
             MonthlySavingsAmount = MonthlySavingsAmount,
             Balances = Balances,
             Fluctuations = Fluctuations,
-            SavingsRate = SavingsRate
+            SavingsRate = SavingsRate,
+            SavingType = SavingType
         };
     }
 }
