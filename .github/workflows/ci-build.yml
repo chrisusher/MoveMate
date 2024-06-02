@@ -40,7 +40,8 @@ jobs:
       run: dotnet build MoveMate.API.sln --no-restore --configuration ${{ env.BUILD_CONFIG }}
 
     - name: Run Services Tests
-      run: dotnet test Tests/Services.Tests/Services.Tests.csproj --no-build --configuration ${{ env.BUILD_CONFIG }} --logger trx --results-directory "TestResults"
+      run: dotnet test --no-build --configuration ${{ env.BUILD_CONFIG }} --logger trx --results-directory "TestResults"
+      working-directory: Tests/Services.Tests
 
     - name: Upload / Create Test Report
       uses: dorny/test-reporter@v1
