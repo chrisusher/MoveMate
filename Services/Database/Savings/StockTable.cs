@@ -11,9 +11,9 @@ public class StockTable
 #elif DEBUG
     public ObjectId _id { get; set; }
 #endif
-    public Guid SavingsId { get; set; } = Guid.NewGuid();
+    public Guid StockId { get; set; } = Guid.NewGuid();
 
-    public Guid StockId { get; set; }
+    public Guid SavingsId { get; set; }
 
     [Required]
     public string StockName { get; set; }
