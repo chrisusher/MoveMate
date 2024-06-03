@@ -110,7 +110,7 @@ public class StockFunctions
         return response;
     }
 
-    [OpenApiOperation(operationId: "UpdateStockAccount", tags: new[] { "Stock" }, Summary = "")]
+    [OpenApiOperation(operationId: "UpdateStockAccount", tags: new[] { "Stocks" }, Summary = "")]
     [OpenApiRequestBody("application/json", typeof(UpdateStocksAndSharesRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(StocksAndSharesDetails))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
