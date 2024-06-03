@@ -42,6 +42,28 @@ public class StockServiceTests
     }
 
     [Test]
+    public async Task CreateStockAsync_CanCreateMultipleInSameAccount_DoesntError()
+    {
+        var stockAccount = await _stockService.CreateStockAsync(_savingsAccount.AccountId, _savingsAccount.SavingsId, new CreateStocksAndSharesRequest
+        {
+            StockName = ServiceTestsCommon.Faker.Company.CompanyName(),
+            StartDate = new(2020, 1, 1),
+        });
+
+        Assert.That(stockAccount, Is.Not.Null, "Stock Account was not created");
+        Assert.That(stockAccount.StockId, Is.Not.EqualTo(Guid.Empty), "Stock Id was not created");
+
+        stockAccount = await _stockService.CreateStockAsync(_savingsAccount.AccountId, _savingsAccount.SavingsId, new CreateStocksAndSharesRequest
+        {
+            StockName = ServiceTestsCommon.Faker.Company.CompanyName(),
+            StartDate = new(2020, 1, 1),
+        });
+
+        Assert.That(stockAccount, Is.Not.Null, "Stock Account was not created");
+        Assert.That(stockAccount.StockId, Is.Not.EqualTo(Guid.Empty), "Stock Id was not created");
+    }
+
+    [Test]
     public async Task GetStocksAsync_ReturnsStocks()
     {
         var stocks = await _stockService.GetStocksAsync(_savingsAccount.SavingsId);
