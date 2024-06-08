@@ -14,6 +14,24 @@ public class StockRepository
         _databaseContext = databaseContext;
     }
 
+    public async Task<StockTable> AddBalanceToStockAsync(Guid savingsId, Guid stockId, double currentBalance, double totalInvestment)
+    {
+        var stockTable = await _databaseContext.Stocks.FirstAsync(x => x.StockId == stockId);
+
+        stockTable.Balances.Add(new StockBalance
+        {
+            AmountInvested = totalInvestment,
+            Balance = currentBalance,
+            Created = DateTime.UtcNow
+        });
+
+        _databaseContext.Stocks.Update(stockTable);
+
+        await _databaseContext.SaveChangesAsync();
+
+        return stockTable;
+    }
+
     public async Task<StockTable> CreateStockAsync(Guid savingsId, CreateStocksAndSharesRequest stockDetails)
     {
         var stock = new StockTable
