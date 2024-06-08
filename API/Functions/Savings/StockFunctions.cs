@@ -25,7 +25,6 @@ public class StockFunctions
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("CreateStockAccount")]
     public async Task<HttpResponseData> CreateStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks")] HttpRequestData request,
-    public async Task<HttpResponseData> CreateStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks")] HttpRequestData request,
         Guid accountId,
         Guid savingsId)
     {
