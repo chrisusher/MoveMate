@@ -24,7 +24,7 @@ public class StockFunctions
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("CreateStockAccount")]
-    public async Task<HttpResponseData> CreateStockAccount([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stock")] HttpRequestData request,
+    public async Task<HttpResponseData> CreateStockAccount([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks")] HttpRequestData request,
         Guid accountId,
         Guid savingsId)
     {
@@ -54,7 +54,7 @@ public class StockFunctions
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetStockAccounts")]
-    public async Task<HttpResponseData> GetStockAccounts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stock")] HttpRequestData request,
+    public async Task<HttpResponseData> GetStockAccounts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks")] HttpRequestData request,
         Guid accountId,
         Guid savingsId)
     {
@@ -81,7 +81,7 @@ public class StockFunctions
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "stockId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetStockAccount")]
-    public async Task<HttpResponseData> GetStockAccount([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stock/{StockId}")] HttpRequestData request,
+    public async Task<HttpResponseData> GetStockAccount([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{StockId}")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         Guid stockId)
@@ -117,7 +117,7 @@ public class StockFunctions
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "stockId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("UpdateStockAccount")]
-    public async Task<HttpResponseData> UpdateAccount([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}/Savings/{savingsId}/Stock/{StockId}")] HttpRequestData request,
+    public async Task<HttpResponseData> UpdateAccount([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{StockId}")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         Guid stockId)
