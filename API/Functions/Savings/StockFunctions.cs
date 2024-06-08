@@ -95,7 +95,7 @@ public class StockFunctions
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "stockId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetStockAccount")]
-    public async Task<HttpResponseData> GetStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{StockId}")] HttpRequestData request,
+    public async Task<HttpResponseData> GetStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         Guid stockId)
@@ -131,7 +131,7 @@ public class StockFunctions
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "stockId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("UpdateStockAccount")]
-    public async Task<HttpResponseData> UpdateStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{StockId}")] HttpRequestData request,
+    public async Task<HttpResponseData> UpdateStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         Guid stockId)
@@ -172,7 +172,7 @@ public class StockFunctions
     [OpenApiParameter(name: "currentBalance", In = ParameterLocation.Query, Required = true, Type = typeof(double))]
     [OpenApiParameter(name: "additionalInvestment", In = ParameterLocation.Query, Required = true, Type = typeof(double))]
     [Function("AddStockBalance")]
-    public async Task<HttpResponseData> AddStockBalanceAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{StockId}/Balance")] HttpRequestData request,
+    public async Task<HttpResponseData> AddStockBalanceAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}/Balance")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         Guid stockId,
