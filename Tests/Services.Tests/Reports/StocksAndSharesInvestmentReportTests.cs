@@ -14,6 +14,7 @@ public class StocksAndSharesInvestmentReportTests : SavingsTestsBase
     private readonly StockService _stocksService;
     private StockInvestmentReport _report;
     private StocksAndSharesDetails _positiveReturnStock;
+    private StocksAndSharesDetails _stockWithBalance3Dps;
 
     public StocksAndSharesInvestmentReportTests()
     {
@@ -38,18 +39,20 @@ public class StocksAndSharesInvestmentReportTests : SavingsTestsBase
             StockName = "Test Stock",
             IsActive = true,
             StartDate = new(2020, 1, 1),
-            MonthlySavingsAmount = 100
+            MonthlySavingsAmount = 0
         });
 
-        var updateRequest = (UpdateStocksAndSharesRequest)_positiveReturnStock;
-        updateRequest.Balances.Add(new()
+        _stockWithBalance3Dps = await _stocksService.CreateStockAsync(ServiceTestsCommon.DefaultAccount.AccountId, stocksAndSharesAccount.SavingsId, new()
         {
-            AmountInvested = 1200,
-            Created = new(2021, 1, 1),
-            Balance = 1500
+            StockName = "Stock With Balance to 3 DPs",
+            IsActive = true,
+            StartDate = new(2020, 1, 1),
+            MonthlySavingsAmount = 0
         });
 
-        await _stocksService.UpdateStockAsync(ServiceTestsCommon.DefaultAccount.AccountId, stocksAndSharesAccount.SavingsId, _positiveReturnStock.StockId, updateRequest);
+        await _stocksService.AddBalanceToStockAsync(stocksAndSharesAccount.SavingsId, _positiveReturnStock.StockId, 1500, 1200);
+        
+        await _stocksService.AddBalanceToStockAsync(stocksAndSharesAccount.SavingsId, _stockWithBalance3Dps.StockId, 1500.123, 1200.567);
 
         _report = await _reportService.GetStockInvestmentReportAsync(ServiceTestsCommon.DefaultAccount.AccountId, stocksAndSharesAccount.SavingsId);
     }
@@ -70,6 +73,14 @@ public class StocksAndSharesInvestmentReportTests : SavingsTestsBase
 
         Assert.That(stockFromReport.AmountInvested, Is.EqualTo(1200), "Positive Return Stock Balance was not correct.");
         Assert.That(stockFromReport.CurrentValue, Is.EqualTo(1500), "Positive Return Stock Current Value was not correct.");
+    }
+
+    [Test]
+    public void GetStockInvestmentReportAsync_PositiveReturnStock_AmountChangeCorrect()
+    {
+        var stockFromReport = _report.Stocks.FirstOrDefault(x => x.StockId == _positiveReturnStock.StockId);
+
+        Assert.That(stockFromReport.AmountChange, Is.EqualTo(300), "Positive Return Stock Percentage Change was not correct.");
     }
 
     [Test]

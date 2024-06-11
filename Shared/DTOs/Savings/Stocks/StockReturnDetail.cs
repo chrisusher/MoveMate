@@ -14,8 +14,8 @@ public class StockReturnDetail
     [JsonPropertyName("currentValue")]
     public double CurrentValue { get; set; }
 
-    [JsonPropertyName("percentageChange")]
-    public double PercentageChange
+    [JsonPropertyName("amountChange")]
+    public double AmountChange
     {
         get
         {
@@ -24,7 +24,22 @@ public class StockReturnDetail
                 return 0;
             }
 
-            return (CurrentValue - AmountInvested) / AmountInvested;
+            return CurrentValue - AmountInvested;
+        }
+    }
+
+    [JsonPropertyName("percentageChange")]
+    public double PercentageChange
+    {
+        get
+        {
+            var amountChange = AmountChange;
+            if(amountChange == 0)
+            {
+                return 0;
+            }
+
+            return amountChange / AmountInvested;
         }
     }
 }
