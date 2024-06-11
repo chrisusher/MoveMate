@@ -94,6 +94,18 @@ public class StocksAndSharesInvestmentReportTests : SavingsTestsBase
     }
 
     [Test]
+    public void GetStockInvestmentReportAsync_AmountChange_RoundedTo2DPs()
+    {
+        Assert.That(_report.Stocks.All(x => x.AmountChange == Math.Round(x.AmountChange, 2)), "Amount Change was not rounded to 2 DPs.");
+    }
+
+    [Test]
+    public void GetStockInvestmentReportAsync_PercentageChange_RoundedTo5DPs()
+    {
+        Assert.That(_report.Stocks.All(x => x.PercentageChange == Math.Round(x.PercentageChange, 5)), "Amount Change was not rounded to 5 DPs.");
+    }
+
+    [Test]
     public void GetStockInvestmentReportAsync_AccountDoesntExist_ThrowsDataNotFoundException()
     {
         Assert.ThrowsAsync<DataNotFoundException>(() => _reportService.GetStockInvestmentReportAsync(Guid.NewGuid(), Guid.NewGuid()), "No exception was thrown when Account was not found.");

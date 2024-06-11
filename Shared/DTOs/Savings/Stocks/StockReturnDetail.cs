@@ -24,7 +24,7 @@ public class StockReturnDetail
                 return 0;
             }
 
-            return CurrentValue - AmountInvested;
+            return Math.Round(CurrentValue - AmountInvested, 2);
         }
     }
 
@@ -39,7 +39,7 @@ public class StockReturnDetail
                 return 0;
             }
 
-            return amountChange / AmountInvested;
+            return Math.Round(amountChange / AmountInvested, 5);
         }
     }
 }
