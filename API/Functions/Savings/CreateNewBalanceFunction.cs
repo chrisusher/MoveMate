@@ -34,7 +34,7 @@ public class CreateNewBalanceFunction : HttpFunction
         try
         {
             response = request.CreateResponse(HttpStatusCode.OK);
-            var responseBody = await _savingsService.CreateNewBalanceAsync(accountId, savingsId, balance);
+            var responseBody = await _savingsService.AddNewBalanceAsync(accountId, savingsId, balance);
 
             await response.WriteAsJsonAsync(responseBody);
         }

@@ -21,7 +21,7 @@ public class SavingsService
         return accountTable.ToSavingsAccount();
     }
 
-    public async Task<SavingsAccount> CreateNewBalanceAsync(Guid accountId, Guid savingsId, double balance)
+    public async Task<SavingsAccount> AddNewBalanceAsync(Guid accountId, Guid savingsId, double balance)
     {
         var savingsAccount = await GetSavingsAccountAsync(accountId, savingsId);
 
@@ -29,6 +29,8 @@ public class SavingsService
         {
             throw new InvalidRequestException($"Cannot add a balance if a Fluctuation is already defined on Savings with Id : {savingsId}");
         }
+
+        balance = Math.Round(balance, 2);
 
         var accountTable = await _savingsRepo.CreateNewBalanceAsync(accountId, savingsId, balance);
 

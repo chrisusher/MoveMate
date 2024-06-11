@@ -25,6 +25,9 @@ public class StockService
             throw new DataNotFoundException($"No Stock or Share Details found in Stocks '{stockId}' with Savings Id '{savingsId}'");
         }
 
+        currentBalance = Math.Round(currentBalance, 2);
+        additionalInvestment = Math.Round(additionalInvestment, 2);
+
         var totalInvestment = additionalInvestment;
 
         if (stock.Balances.Any())
