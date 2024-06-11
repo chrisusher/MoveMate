@@ -249,6 +249,11 @@ public class ReportsService
             throw new DataNotFoundException(message: "Savings account passed to StockInvestmentReport was not found.");
         }
 
+        if (stockSavingsAccount.SavingType != SavingType.StocksAndShares)
+        {
+            throw new InvalidRequestException(message: "Savings account passed to StockInvestmentReport is not a Stocks and Shares account.");
+        }
+
         var stocksInAccountTask = _stockService.GetStocksAsync(stockSavingsAccount.SavingsId);
 
         var report = new StockInvestmentReport();

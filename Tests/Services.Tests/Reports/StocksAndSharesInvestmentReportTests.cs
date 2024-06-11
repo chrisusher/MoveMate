@@ -2,14 +2,15 @@
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Reports;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings.Stocks;
+using ChrisUsher.MoveMate.Shared.Exceptions;
+using Services.Tests.Savings;
 
 namespace Services.Tests.Reports;
 
 [TestFixture]
-public class StocksAndSharesInvestmentReportTests
+public class StocksAndSharesInvestmentReportTests : SavingsTestsBase
 {
     private readonly ReportsService _reportService;
-    private readonly SavingsService _savingsService;
     private readonly StockService _stocksService;
     private StockInvestmentReport _report;
     private StocksAndSharesDetails _positiveReturnStock;
@@ -17,14 +18,13 @@ public class StocksAndSharesInvestmentReportTests
     public StocksAndSharesInvestmentReportTests()
     {
         _reportService = ServiceTestsCommon.Services.GetService<ReportsService>();
-        _savingsService = ServiceTestsCommon.Services.GetService<SavingsService>();
         _stocksService = ServiceTestsCommon.Services.GetService<StockService>();
     }
 
     [OneTimeSetUp]
     public async Task ClassSetupAsync()
     {
-        var stocksAndSharesAccount = await _savingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new()
+        var stocksAndSharesAccount = await SavingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new()
         {
             Name = "Test Account",
             InitialBalance = 10_000,
@@ -80,5 +80,25 @@ public class StocksAndSharesInvestmentReportTests
         Assert.That(stockFromReport, Is.Not.Null, "Positive Return Stock was null.");
 
         Assert.That(stockFromReport.PercentageChange, Is.EqualTo(0.25), "Positive Return Stock Percentage Change was not correct.");
+    }
+
+    [Test]
+    public void GetStockInvestmentReportAsync_AccountDoesntExist_ThrowsDataNotFoundException()
+    {
+        Assert.ThrowsAsync<DataNotFoundException>(() => _reportService.GetStockInvestmentReportAsync(Guid.NewGuid(), Guid.NewGuid()), "No exception was thrown when Account was not found.");
+    }
+
+    [Test]
+    public void GetStockInvestmentReportAsync_SavingsDoesntExist_ThrowsDataNotFoundException()
+    {
+        Assert.ThrowsAsync<DataNotFoundException>(() => _reportService.GetStockInvestmentReportAsync(ServiceTestsCommon.DefaultAccount.AccountId, Guid.NewGuid()), "No exception was thrown when Savings was not found.");
+    }
+
+    [Test]
+    public async Task GetStockInvestmentReportAsync_NotStocksAndSharesSavings_ThrowsDataNotFoundException()
+    {
+        var savingAccount = await CreateSavingsAccount(SavingType.CurrentAccount);
+
+        Assert.ThrowsAsync<InvalidRequestException>(() => _reportService.GetStockInvestmentReportAsync(ServiceTestsCommon.DefaultAccount.AccountId, savingAccount.SavingsId), "No exception was thrown when Saving Id was associated with a non Stocks and Shares Savings Account.");
     }
 }
