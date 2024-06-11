@@ -11,6 +11,34 @@ public class SavingsServiceTests : SavingsTestsBase
     }
 
     [Test]
+    public async Task AddNewBalanceAsync_ReturnsSavingWithNewBalance()
+    {
+        var savingsAccount = await GetNewOrExistingSavingsAccountAsync();
+        var balances = savingsAccount.Balances.Count;
+
+        var savingId = savingsAccount.SavingsId;
+        var updatedSaving = await SavingsService.AddNewBalanceAsync(ServiceTestsCommon.DefaultAccount.AccountId,  savingId, 100);
+
+        Assert.That(updatedSaving, expression: Is.Not.Null, "Saving was not returned.");
+        Assert.That(updatedSaving.SavingsId, Is.EqualTo(savingId), "Saving was not returned.");
+        Assert.That(updatedSaving.Balances.Count, Is.EqualTo(balances + 1), "Balance was not added.");
+    }
+
+    [Test]
+    public async Task AddBalanceToStockAsync_With3Dps_IsRounded()
+    {
+        var savingsAccount = await GetNewOrExistingSavingsAccountAsync();
+        var balances = savingsAccount.Balances.Count;
+
+        var savingId = savingsAccount.SavingsId;
+        var updatedSaving = await SavingsService.AddNewBalanceAsync(ServiceTestsCommon.DefaultAccount.AccountId,  savingId, 100.123);
+
+        Assert.That(updatedSaving, expression: Is.Not.Null, "Saving was not returned.");
+        Assert.That(updatedSaving.SavingsId, Is.EqualTo(savingId), "Saving was not returned.");
+        Assert.That(updatedSaving.Balances.Last().Balance, Is.EqualTo(100.12), "Balance was not rounded correctly.");
+    }
+
+    [Test]
     public async Task CreateSavingAsync_ReturnsSaving()
     {
         var savingsAccount = await SavingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest

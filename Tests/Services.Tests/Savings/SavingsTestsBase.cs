@@ -22,5 +22,23 @@ namespace Services.Tests.Savings
                 SavingType = savingType
             });
         }
+
+        protected async Task<SavingsAccount> GetNewOrExistingSavingsAccountAsync()
+        {
+            var savings = await SavingsService.GetSavingsAccountsAsync(ServiceTestsCommon.DefaultAccount.AccountId);
+
+            var saving = savings.FirstOrDefault();
+
+            if (saving == null)
+            {
+                saving = await SavingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest
+                {
+                    Name = $"Test Account-{DateTime.UtcNow.Ticks}",
+                    SavingType = SavingType.CurrentAccount
+                });
+            }
+
+            return saving;
+        }
     }
 }

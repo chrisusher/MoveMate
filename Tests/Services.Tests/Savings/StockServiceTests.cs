@@ -81,6 +81,31 @@ public class StockServiceTests
         Assert.That(updatedStock.Balances.Count, Is.EqualTo(stockBalances + 1), "Balance was not added.");
     }
 
+    [Test]
+    public async Task AddBalanceToStockAsync_With3Dps_IsRounded()
+    {
+        var stock = await GetNewOrExistingStockAsync();
+
+        var existingBalances = stock.Balances.LastOrDefault();
+
+        var existingInvestment = 0.0;
+
+        if(existingBalances != null)
+        {
+            existingInvestment = existingBalances.AmountInvested;
+        }
+
+        var stockBalances = stock.Balances.Count;
+        var currentBalance = 1000.123;
+
+        var stockId = stock.StockId;
+        var updatedStock = await _stockService.AddBalanceToStockAsync(_savingsAccount.SavingsId, stockId, currentBalance, 1200.567);
+
+        Assert.That(updatedStock.Balances.Count, Is.EqualTo(stockBalances + 1), "Balance was not added.");
+        Assert.That(updatedStock.Balances.Last().Balance, Is.EqualTo(1000.12), "Balance was not rounded.");
+        Assert.That(updatedStock.Balances.Last().AmountInvested, Is.EqualTo(1200.57 + existingInvestment), "Amount Invested was not rounded.");
+    }
+
     [TestCase(0)]
     [TestCase(-1)]
     [Test]
