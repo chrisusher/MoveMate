@@ -4,19 +4,16 @@ using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 namespace Services.Tests.Savings;
 
 [TestFixture]
-public class SavingsServiceTests
+public class SavingsServiceTests : SavingsTestsBase
 {
-    private readonly SavingsService _savingsService;
-
     public SavingsServiceTests()
     {
-        _savingsService = ServiceTestsCommon.Services.GetService<SavingsService>();
     }
 
     [Test]
     public async Task CreateSavingAsync_ReturnsSaving()
     {
-        var savingsAccount = await _savingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest
+        var savingsAccount = await SavingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest
         {
             Name = "Test Account",
             InitialBalance = 10000,
@@ -30,7 +27,7 @@ public class SavingsServiceTests
     [Test]
     public async Task GetSavingsAccountsAsync_ReturnsSavings()
     {
-        var savings = await _savingsService.GetSavingsAccountsAsync(ServiceTestsCommon.DefaultAccount.AccountId);
+        var savings = await SavingsService.GetSavingsAccountsAsync(ServiceTestsCommon.DefaultAccount.AccountId);
 
         Assert.That(savings, Is.Not.Null, "Savings were not returned");
         Assert.That(savings, Is.Not.Empty, "Savings were not returned");
@@ -39,12 +36,12 @@ public class SavingsServiceTests
     [Test]
     public async Task GetSavingAsync_ReturnsSaving()
     {
-        var savings = await _savingsService.GetSavingsAccountsAsync(ServiceTestsCommon.DefaultAccount.AccountId);
+        var savings = await SavingsService.GetSavingsAccountsAsync(ServiceTestsCommon.DefaultAccount.AccountId);
         var saving = savings.FirstOrDefault();
 
         if (savings == null)
         {
-            saving = await _savingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest
+            saving = await SavingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest
             {
                 Name = "Test Account",
                 InitialBalance = 10000,
@@ -53,7 +50,7 @@ public class SavingsServiceTests
         }
 
         var savingId = saving.SavingsId;
-        saving = await _savingsService.GetSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, savingId);
+        saving = await SavingsService.GetSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, savingId);
 
         Assert.That(saving, Is.Not.Null, "Saving was not returned");
         Assert.That(saving.SavingsId, Is.EqualTo(savingId), "Saving was not returned");
@@ -62,13 +59,13 @@ public class SavingsServiceTests
     [Test]
     public async Task UpdateSavingAsync_ReturnsSaving()
     {
-        var savings = await _savingsService.GetSavingsAccountsAsync(ServiceTestsCommon.DefaultAccount.AccountId);
+        var savings = await SavingsService.GetSavingsAccountsAsync(ServiceTestsCommon.DefaultAccount.AccountId);
 
         var saving = savings.FirstOrDefault();
 
         if (saving == null)
         {
-            saving = await _savingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest
+            saving = await SavingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new CreateSavingsAccountRequest
             {
                 Name = "Test Account",
                 InitialBalance = 10000,
@@ -79,7 +76,7 @@ public class SavingsServiceTests
         var newName = "Another Account";
         saving.Name = newName;
 
-        saving = await _savingsService.UpdateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, saving.SavingsId, saving);
+        saving = await SavingsService.UpdateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, saving.SavingsId, saving);
 
         Assert.That(saving, Is.Not.Null, "Saving was not returned");
         Assert.That(saving.Name, Is.EqualTo(newName), "Saving was not returned");
