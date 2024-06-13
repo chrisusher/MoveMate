@@ -106,6 +106,22 @@ public class StocksAndSharesInvestmentReportTests : SavingsTestsBase
     }
 
     [Test]
+    public void GetStockInvestmentReportAsync_HasOverallPercentageChange()
+    {
+        var correctPercentageChange = Math.Round(_report.Stocks.Sum(x => x.PercentageChange) / _report.Stocks.Count, 5);
+
+        Assert.That(_report.OverallPercentageChange, Is.EqualTo(correctPercentageChange), "Overall Percentage Change was not correct.");
+    }
+
+    [Test]
+    public void GetStockInvestmentReportAsync_HasOverallChange()
+    {
+        var correctAmountChange = Math.Round(_report.Stocks.Sum(x => x.AmountChange), 2);
+
+        Assert.That(_report.OverallChange, Is.EqualTo(correctAmountChange), "Overall Change was not correct.");
+    }
+
+    [Test]
     public void GetStockInvestmentReportAsync_AccountDoesntExist_ThrowsDataNotFoundException()
     {
         Assert.ThrowsAsync<DataNotFoundException>(() => _reportService.GetStockInvestmentReportAsync(Guid.NewGuid(), Guid.NewGuid()), "No exception was thrown when Account was not found.");
