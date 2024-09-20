@@ -25,6 +25,7 @@ namespace ChrisUsher.MoveMate.Shared.DTOs.Costs
                 Fluctuations = Fluctuations,
                 Name = Name,
                 PercentageOfSale = PercentageOfSale,
+                IncludesVAT = IncludesVAT
             };
         }
     }
