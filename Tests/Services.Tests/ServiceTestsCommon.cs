@@ -6,7 +6,6 @@ using ChrisUsher.MoveMate.API.Services.Accounts;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
-using Ductus.FluentDocker.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -76,8 +75,6 @@ namespace Services.Tests
                 return _purchaseProperty;
             }
         }
-
-        public static ICompositeService DockerServices { get; internal set; }
 
         public static Faker Faker
         {
