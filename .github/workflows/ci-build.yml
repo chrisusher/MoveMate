@@ -32,14 +32,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
-
-    - name: Set up Docker Compose alias
-      run: |
-        echo 'alias docker-compose="docker compose"' >> ~/.bashrc
-        source ~/.bashrc
-
-    - name: Verify docker-compose alias
-      run: docker-compose --version
         
     - name: Restore dependencies
       run: dotnet restore MoveMate.API.sln
