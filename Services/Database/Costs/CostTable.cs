@@ -42,6 +42,7 @@ namespace ChrisUsher.MoveMate.API.Services.Database.Costs
                 Fluctuations = Fluctuations,
                 Name = Name,
                 PercentageOfSale = PercentageOfSale,
+                IncludesVAT = IncludesVAT
             };
         }
     }
