@@ -1,4 +1,4 @@
-name: Build and deploy dotnet core project to Azure Function App - movemate-test
+name: movemate-test - Deploy from any branch
 on:
   workflow_dispatch:
 
