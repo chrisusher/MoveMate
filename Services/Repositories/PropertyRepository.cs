@@ -24,7 +24,9 @@ public class PropertyRepository
             MaxValue = property.MaxValue,
             MinValue = property.MinValue,
             PropertyType = property.PropertyType,
-            Equity = property.Equity
+            Equity = property.Equity,
+            Notes = property.Notes,
+            MarketDetails = property.MarketDetails,
         };
 
         await _databaseContext.Properties.AddAsync(propertyTable);
