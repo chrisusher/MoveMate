@@ -49,6 +49,14 @@ public class PropertyService
         return propertyTable.ToProperty();
     }
 
+    public async Task<Property> UpdatePropertyNotesAsync(Guid accountId, Guid propertyId, List<string> notes)
+    {
+        var property = await GetPropertyAsync(accountId, propertyId);
+        property.Notes = notes;
+
+        return await UpdatePropertyAsync(accountId, propertyId, property);
+    }
+
     public async Task<Property> GetCurrentPropertyAsync(Guid accountId)
     {
         var propertyTable = await _propertyRepo.GetPropertyAsync(accountId, PropertyType.Current);

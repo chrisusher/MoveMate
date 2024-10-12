@@ -69,6 +69,8 @@ public class PropertyRepository
         propertyTable.IsDeleted = property.IsDeleted;
         propertyTable.PropertyType = property.PropertyType;
         propertyTable.Equity = property.Equity;
+        propertyTable.Notes = property.Notes;
+        propertyTable.MarketDetails = property.MarketDetails;
 
         _databaseContext.Properties.Update(propertyTable);
 
