@@ -16,10 +16,34 @@ public class PropertyService
     public async Task<Property> CreatePropertyAsync(Guid accountId, CreatePropertyRequest request)
     {
         var property = request.ToProperty();
-        
+
+        if (property.PropertyType == PropertyType.ToPurchase)
+        {
+            if (property.MarketDetails != null)
+            {
+                try
+                {
+                    var houseFinderProperty = await GetHouseFinderPropertyAsync(accountId, property.MarketDetails.Id);
+                    throw new PropertyAlreadyExistsException($"Property with Id '{property.MarketDetails.Id}' already exists in Account '{accountId}'");
+                }
+                catch (DataNotFoundException)
+                {
+                }
+            }
+        }
+
         var propertyTable = await _propertyRepo.CreatePropertyAsync(accountId, property);
 
         return propertyTable.ToProperty();
+    }
+
+    public async Task<Property> GetHouseFinderPropertyAsync(Guid accountId, long houseFinderId)
+    {
+        var property = await _propertyRepo.GetHouseFinderPropertyAsync(accountId, houseFinderId);
+
+        return property == null
+            ? throw new DataNotFoundException($"No Property found in Account '{accountId}' with HouseFinder Id '{houseFinderId}'")
+            : property.ToProperty();
     }
 
     public async Task<Property> GetPropertyAsync(Guid accountId, Guid propertyId)
@@ -43,7 +67,7 @@ public class PropertyService
     public async Task<Property> UpdatePropertyAsync(Guid accountId, Guid propertyId, UpdatePropertyRequest request)
     {
         var property = request.ToProperty(accountId, propertyId);
-        
+
         var propertyTable = await _propertyRepo.UpdatePropertyAsync(property);
 
         return propertyTable.ToProperty();

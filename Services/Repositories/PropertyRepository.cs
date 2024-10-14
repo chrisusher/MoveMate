@@ -35,6 +35,17 @@ public class PropertyRepository
         return propertyTable;
     }
 
+    public async Task<PropertyTable> GetHouseFinderPropertyAsync(Guid accountId, long houseFinderId)
+    {
+        return await _databaseContext.Properties
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.AccountId == accountId
+                && x.PropertyType == PropertyType.ToPurchase
+                && !x.IsDeleted
+                && x.MarketDetails != null
+                && x.MarketDetails.Id == houseFinderId);
+    }
+
     public async Task<PropertyTable> GetPropertyAsync(Guid accountId, Guid propertyId)
     {
         return await _databaseContext.Properties

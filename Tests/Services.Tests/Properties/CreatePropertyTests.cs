@@ -1,13 +1,12 @@
 ﻿using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
+using ChrisUsher.MoveMate.Shared.Exceptions;
 
 namespace Services.Tests.Properties;
 
 [TestFixture]
 public class CreatePropertyServiceTests : PropertyServiceTestsBase
 {
-    private CreatePropertyRequest _houseFinderRequest;
-
     public CreatePropertyServiceTests() : base()
     {
     }
@@ -15,7 +14,6 @@ public class CreatePropertyServiceTests : PropertyServiceTestsBase
     [OneTimeSetUp]
     public void ClassSetup()
     {
-        _houseFinderRequest = HouseFinderProperty;
     }
 
     [Test]
@@ -58,14 +56,29 @@ public class CreatePropertyServiceTests : PropertyServiceTestsBase
 
     [Test]
     public async Task CreatePropertyAsync_HouseFinder_ReturnsProperty()
-    {       
-        var property = await PropertyService.CreatePropertyAsync(ServiceTestsCommon.DefaultAccount.AccountId, _houseFinderRequest);
+    {
+        var houseFinderProperty = HouseFinderProperty;
+
+        var property = await PropertyService.CreatePropertyAsync(ServiceTestsCommon.DefaultAccount.AccountId, houseFinderProperty);
 
         Assert.That(property, Is.Not.Null, "Property not created successfully.");
 
-        Assert.That(property.MarketDetails.Id, Is.EqualTo(_houseFinderRequest.MarketDetails.Id), "Market details Id not set on property.");
-        Assert.That(property.MarketDetails.Url, Is.EqualTo(_houseFinderRequest.MarketDetails.Url), "Market details Url not set on property.");
-        Assert.That(property.MarketDetails.FloorSpaceSqFt, Is.EqualTo(_houseFinderRequest.MarketDetails.FloorSpaceSqFt), "Market details Floor Space not set on property.");
-        Assert.That(property.MarketDetails.Tags, Is.EqualTo(_houseFinderRequest.MarketDetails.Tags), "Market details Tags not set on property.");
+        Assert.That(property.MarketDetails.Id, Is.EqualTo(houseFinderProperty.MarketDetails.Id), "Market details Id not set on property.");
+        Assert.That(property.MarketDetails.Url, Is.EqualTo(houseFinderProperty.MarketDetails.Url), "Market details Url not set on property.");
+        Assert.That(property.MarketDetails.FloorSpaceSqFt, Is.EqualTo(houseFinderProperty.MarketDetails.FloorSpaceSqFt), "Market details Floor Space not set on property.");
+        Assert.That(property.MarketDetails.Tags, Is.EqualTo(houseFinderProperty.MarketDetails.Tags), "Market details Tags not set on property.");
+    }
+
+    [Test]
+    public async Task CreatePropertyAsync_HouseFinder_AlreadyExists_ThrowsAlreadyExistsException()
+    {
+        var houseFinderProperty = HouseFinderProperty;
+
+        await PropertyService.CreatePropertyAsync(ServiceTestsCommon.DefaultAccount.AccountId, houseFinderProperty);
+
+        Assert.ThrowsAsync<PropertyAlreadyExistsException>(async () =>
+        {
+            await PropertyService.CreatePropertyAsync(ServiceTestsCommon.DefaultAccount.AccountId, houseFinderProperty);
+        });
     }
 }

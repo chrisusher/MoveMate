@@ -22,7 +22,7 @@ public class PropertyServiceTestsBase
         MaxValue = 325_000,
         MarketDetails = new()
         {
-            Id = 11830919,
+            Id = ServiceTestsCommon.Faker.Random.Number(1_000_000, 999_999_999),
             Heading = "4 bedroom property for sale",
             SubHeading = "St. Helens Road, Swansea",
             Url = "https://www.onthemarket.com/details/11830919/",
