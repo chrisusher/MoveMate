@@ -1,0 +1,19 @@
+meta {
+  name: Get All Properties
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BASE_URL}}Accounts/{{ACCOUNT_ID}}/Properties?propertyType=toPurchase
+  body: none
+  auth: none
+}
+
+params:query {
+  propertyType: toPurchase
+}
+
+headers {
+  accept: application/json
+}

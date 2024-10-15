@@ -1,8 +1,8 @@
 using Azure.Storage.Blobs;
 using Bogus;
-using ChrisUsher.MoveMate.API.Database;
 using ChrisUsher.MoveMate.API.Services;
 using ChrisUsher.MoveMate.API.Services.Accounts;
+using ChrisUsher.MoveMate.API.Services.Database;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;

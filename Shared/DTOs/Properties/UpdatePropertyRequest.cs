@@ -20,7 +20,9 @@ public class UpdatePropertyRequest : CreatePropertyRequest
             MinValue = MinValue,
             Name = Name,
             PropertyType = PropertyType,
-            Equity = Equity
+            Equity = Equity,
+            Notes = Notes,
+            MarketDetails = MarketDetails
         };
     }
 }

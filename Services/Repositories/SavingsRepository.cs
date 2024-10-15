@@ -1,9 +1,9 @@
-﻿using ChrisUsher.MoveMate.API.Database;
+﻿using ChrisUsher.MoveMate.API.Services.Database;
 using ChrisUsher.MoveMate.API.Services.Database.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChrisUsher.MoveMate.API.Repositories;
+namespace ChrisUsher.MoveMate.API.Services.Repositories;
 
 public class SavingsRepository
 {

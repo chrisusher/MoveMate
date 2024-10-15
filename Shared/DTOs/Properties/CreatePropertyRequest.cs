@@ -20,6 +20,12 @@ public class CreatePropertyRequest
     [JsonPropertyName("equity")]
     public Equity Equity { get; set; }
 
+    [JsonPropertyName("notes")]
+    public List<string> Notes { get; set; }
+
+    [JsonPropertyName("marketDetails")]
+    public PropertyMarketDetails MarketDetails { get; set; }
+
     public Property ToProperty()
     {
         var property = new Property
@@ -27,12 +33,18 @@ public class CreatePropertyRequest
             Name = Name,
             MaxValue = MaxValue,
             MinValue = MinValue,
-            PropertyType = PropertyType
+            PropertyType = PropertyType,
+            Notes = Notes
         };
 
         if(Equity != null)
         {
             property.Equity = Equity;
+        }
+
+        if(MarketDetails != null)
+        {
+            property.MarketDetails = MarketDetails;
         }
 
         return property;

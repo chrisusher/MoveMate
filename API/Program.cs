@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
-using ChrisUsher.MoveMate.API.Database;
 using Azure.Core.Serialization;
 using ChrisUsher.MoveMate.API.Services;
+using ChrisUsher.MoveMate.API.Services.Database;
 
 var config = new ConfigurationBuilder()
 #if DEBUG
@@ -29,25 +29,28 @@ var host = new HostBuilder()
     .ConfigureOpenApi()
     .ConfigureServices(services =>
     {
-        services.AddDbContext<DatabaseContext>(options => 
+        services.AddDbContext<DatabaseContext>(options =>
         {
             options.UseCosmos(config["Database:AccountName"], config["Database:Key"], config["Database:DatabaseName"]);
 
             options.EnableSensitiveDataLogging();
 
-            #if DEBUG
-            
+#if DEBUG
+
             options.EnableDetailedErrors();
             options.LogTo(Console.WriteLine);
 
-            #endif
+#endif
         });
 
         services.AddMoveMateServices(config);
     })
     .Build();
 
-    var dbContext = host.Services.GetRequiredService<DatabaseContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+var dbContext = host.Services.GetRequiredService<DatabaseContext>();
+await dbContext.Database.EnsureCreatedAsync();
+
+var migrationService = host.Services.GetRequiredService<MigrationsService>();
+await migrationService.ApplyMigrationsAsync();
 
 host.Run();

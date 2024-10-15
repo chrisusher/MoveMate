@@ -33,6 +33,10 @@ namespace ChrisUsher.MoveMate.API.Services.Database.Properties
 
         public Equity Equity { get; set; }
 
+        public List<string> Notes { get; set; }
+
+        public PropertyMarketDetails MarketDetails { get; set; }
+
         public Property ToProperty()
         {
             var property = new Property
@@ -44,13 +48,19 @@ namespace ChrisUsher.MoveMate.API.Services.Database.Properties
                 MaxValue = MaxValue,
                 PropertyType = PropertyType,
                 IsDeleted = IsDeleted,
-                Created = Created
+                Created = Created,
+                Notes = Notes,
             };
 
             if (Equity != null)
             {
                 property.Equity = Equity;
             }
+            if (MarketDetails != null)
+            {
+                property.MarketDetails = MarketDetails;
+            }
+
             return property;
         }
     }

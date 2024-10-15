@@ -71,7 +71,7 @@ public class ReportsService
 
         if (request.CurrentPropertySalePrice.HasValue)
         {
-            report.Equity = request.CurrentPropertySalePrice.Value - currentProperty.Equity.RemainingMortgage;
+            report.Equity = request.CurrentPropertySalePrice.Value - (currentProperty.Equity?.RemainingMortgage ?? 0);
         }
         if (request.PurchasePrice.HasValue)
         {
@@ -91,7 +91,7 @@ public class ReportsService
             case CaseType.BestCase:
                 if (report.Equity == 0)
                 {
-                    report.Equity = currentProperty.MaxValue - currentProperty.Equity.RemainingMortgage;
+                    report.Equity = currentProperty.MaxValue - (currentProperty.Equity?.RemainingMortgage ?? 0);
                 }
                 if (purchasePrice == 0)
                 {

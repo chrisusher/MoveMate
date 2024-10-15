@@ -1,10 +1,10 @@
-﻿using ChrisUsher.MoveMate.API.Database;
+﻿using ChrisUsher.MoveMate.API.Services.Database;
 using ChrisUsher.MoveMate.API.Services.Database.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChrisUsher.MoveMate.API.Repositories;
+namespace ChrisUsher.MoveMate.API.Services.Repositories;
 
 public class PropertyRepository
 {
@@ -24,13 +24,24 @@ public class PropertyRepository
             MaxValue = property.MaxValue,
             MinValue = property.MinValue,
             PropertyType = property.PropertyType,
-            Equity = property.Equity
+            Equity = property.Equity,
+            Notes = property.Notes,
+            MarketDetails = property.MarketDetails,
         };
 
         await _databaseContext.Properties.AddAsync(propertyTable);
         await _databaseContext.SaveChangesAsync();
 
         return propertyTable;
+    }
+
+    public async Task<PropertyTable> GetHouseFinderPropertyAsync(Guid accountId, long houseFinderId)
+    {
+        var propertiesToBuy = await GetPropertiesAsync(accountId, PropertyType.ToPurchase);
+
+        var existingProperty = propertiesToBuy.FirstOrDefault(x => x.MarketDetails?.Id == houseFinderId);
+
+        return existingProperty;
     }
 
     public async Task<PropertyTable> GetPropertyAsync(Guid accountId, Guid propertyId)
@@ -67,6 +78,8 @@ public class PropertyRepository
         propertyTable.IsDeleted = property.IsDeleted;
         propertyTable.PropertyType = property.PropertyType;
         propertyTable.Equity = property.Equity;
+        propertyTable.Notes = property.Notes;
+        propertyTable.MarketDetails = property.MarketDetails;
 
         _databaseContext.Properties.Update(propertyTable);
 

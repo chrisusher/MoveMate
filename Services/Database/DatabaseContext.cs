@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore.Extensions;
 
-namespace ChrisUsher.MoveMate.API.Database;
+namespace ChrisUsher.MoveMate.API.Services.Database;
 
 public class DatabaseContext : DbContext
 {
@@ -44,6 +44,10 @@ public class DatabaseContext : DbContext
             .ToContainer("Stocks")
             .HasPartitionKey("SavingsId");
 
+        modelBuilder.Entity<MigrationTable>()
+            .ToContainer("Migrations")
+            .HasPartitionKey("MigrationId");
+
 #elif DEBUG
 
         modelBuilder.Entity<AccountTable>()
@@ -66,6 +70,8 @@ public class DatabaseContext : DbContext
     public DbSet<AccountTable> Accounts { get; set; }
 
     public DbSet<CostTable> Costs { get; set; }
+
+    public DbSet<MigrationTable> Migrations { get; set; }
 
     public DbSet<PropertyTable> Properties { get; set; }
 
