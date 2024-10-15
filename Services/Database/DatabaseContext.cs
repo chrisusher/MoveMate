@@ -44,7 +44,7 @@ public class DatabaseContext : DbContext
             .ToContainer("Stocks")
             .HasPartitionKey("SavingsId");
 
-        modelBuilder.Entity<MigrationTable>
+        modelBuilder.Entity<MigrationTable>()
             .ToContainer("Migrations")
             .HasPartitionKey("MigrationId");
 

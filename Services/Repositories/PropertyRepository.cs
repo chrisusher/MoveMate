@@ -37,14 +37,11 @@ public class PropertyRepository
 
     public async Task<PropertyTable> GetHouseFinderPropertyAsync(Guid accountId, long houseFinderId)
     {
-        return await _databaseContext.Properties
-            .AsNoTracking()
-            .Where(x => x.AccountId == accountId
-                && x.PropertyType == PropertyType.ToPurchase
-                && !x.IsDeleted
-                && x.MarketDetails != null
-                && x.MarketDetails.Id == houseFinderId)
-            .FirstOrDefaultAsync();
+        var propertiesToBuy = await GetPropertiesAsync(accountId, PropertyType.ToPurchase);
+
+        var existingProperty = propertiesToBuy.FirstOrDefault(x => x.MarketDetails?.Id == houseFinderId);
+
+        return existingProperty;
     }
 
     public async Task<PropertyTable> GetPropertyAsync(Guid accountId, Guid propertyId)

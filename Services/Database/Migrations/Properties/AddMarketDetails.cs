@@ -45,7 +45,7 @@ namespace ChrisUsher.MoveMate.API.Services.Database.Migrations.Properties
             {
                 try
                 {
-                    var partitionKey = new PartitionKey(result.PropertyId.ToString());
+                    var partitionKey = new PartitionKey(result.AccountId.ToString());
 
                     await container.PatchItemAsync<PropertyTable>(id: $"PropertyTable|{result.PropertyId}", partitionKey, patchOperations: patchOperations);
                 }

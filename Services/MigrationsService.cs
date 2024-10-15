@@ -21,6 +21,8 @@ public class MigrationsService
     {
         var migrations = GetMigrations();
 
+        _logger.LogInformation("Found {migrationCount} migrations to apply", migrations.Count);
+
         foreach (var migration in migrations)
         {
             var typeName = migration.GetType().FullName;
@@ -50,6 +52,8 @@ public class MigrationsService
                 _logger.LogError(ex, "Unable to apply Migration '{migration.MigrationName}' due to errors.", migration.MigrationName);
             }
         }
+
+        _logger.LogInformation("Finished applying migrations");
     }
 
     private async Task SetMigrationAppliedAsync(string migrationName, string typeName, DateTime createdOn)

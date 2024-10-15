@@ -21,14 +21,11 @@ public class MigrationsRepository
 
     public async Task<MigrationTable> GetMigrationAsync(string migrationName)
     {
-        await using var dbContext = _databaseContext;
-        return await dbContext.Migrations.FirstOrDefaultAsync(x => x.MigrationName == migrationName);
+        return await _databaseContext.Migrations.FirstOrDefaultAsync(x => x.MigrationName == migrationName);
     }
 
     public async Task SetMigrationAppliedAsync(string migrationName, string typeName, DateTime migrationDate)
     {
-        await using var dbContext = _databaseContext;
-
         var migration = new MigrationTable
         {
             MigrationId = Guid.NewGuid(),
@@ -37,8 +34,8 @@ public class MigrationsRepository
             CreatedOn = DateTime.UtcNow,
             MigrationDate = migrationDate
         };
-        dbContext.Migrations.Add(migration);
+        _databaseContext.Migrations.Add(migration);
 
-        await dbContext.SaveChangesAsync();
+        await _databaseContext.SaveChangesAsync();
     }
 }
