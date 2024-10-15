@@ -40,6 +40,13 @@ In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
 
             await response.WriteAsJsonAsync(responseBody);
         }
+        catch(PropertyAlreadyExistsException propertyAlreadyExists)
+        {
+            response = request.CreateResponse(HttpStatusCode.Conflict);
+            await response.WriteStringAsync(propertyAlreadyExists.Message);
+
+            return response;
+        }
         catch (Exception ex)
         {
             _logger.LogError(new EventId(Convert.ToInt32(DateTime.UtcNow.ToString("HHmmss"))), ex, ex.Message);
