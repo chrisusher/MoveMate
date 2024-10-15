@@ -18,7 +18,7 @@ namespace ChrisUsher.MoveMate.API.Services
         {
             #region Azure Services
 
-            services.AddAzureClients(config => 
+            services.AddAzureClients(config =>
             {
                 config.AddBlobServiceClient(configuration.GetConnectionString("AzureStorage"));
             });
@@ -26,13 +26,16 @@ namespace ChrisUsher.MoveMate.API.Services
             #endregion
 
             #region Repositories
-            
+
             services.AddSingleton<AccountRepository>();
             services.AddSingleton<CostRepository>();
             services.AddSingleton<PropertyRepository>();
             services.AddSingleton<SavingsRepository>();
             services.AddSingleton<StockRepository>();
+
+#if RELEASE
             services.AddSingleton<MigrationsRepository>();
+#endif
 
             #endregion
 
@@ -47,8 +50,10 @@ namespace ChrisUsher.MoveMate.API.Services
             services.AddSingleton<SavingsService>();
             services.AddSingleton<StampDutyService>();
             services.AddSingleton<StockService>();
+
+#if RELEASE
             services.AddSingleton<MigrationsService>();
-        
+#endif
             #endregion
 
             return services;

@@ -1,10 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
 
 namespace ChrisUsher.MoveMate.API.Services.Database;
 
 public class MigrationTable
 {
+#if RELEASE
     [Key]
+#elif DEBUG
+    public ObjectId _id { get; set; }
+#endif
     public Guid MigrationId { get; set; }
 
     [Required]
