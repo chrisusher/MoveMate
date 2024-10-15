@@ -1,4 +1,4 @@
-using ChrisUsher.MoveMate.API.Repositories;
+using ChrisUsher.MoveMate.API.Services.Repositories;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
 
 namespace ChrisUsher.MoveMate.API.Services.Accounts

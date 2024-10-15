@@ -1,10 +1,10 @@
-﻿using ChrisUsher.MoveMate.API.Database;
+﻿using ChrisUsher.MoveMate.API.Services.Database;
 using ChrisUsher.MoveMate.API.Services.Database.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChrisUsher.MoveMate.API.Repositories;
+namespace ChrisUsher.MoveMate.API.Services.Repositories;
 
 public class PropertyRepository
 {
@@ -39,11 +39,12 @@ public class PropertyRepository
     {
         return await _databaseContext.Properties
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.AccountId == accountId
+            .Where(x => x.AccountId == accountId
                 && x.PropertyType == PropertyType.ToPurchase
                 && !x.IsDeleted
                 && x.MarketDetails != null
-                && x.MarketDetails.Id == houseFinderId);
+                && x.MarketDetails.Id == houseFinderId)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<PropertyTable> GetPropertyAsync(Guid accountId, Guid propertyId)
