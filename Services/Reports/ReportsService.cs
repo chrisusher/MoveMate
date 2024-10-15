@@ -71,7 +71,7 @@ public class ReportsService
 
         if (request.CurrentPropertySalePrice.HasValue)
         {
-            report.Equity = request.CurrentPropertySalePrice.Value - currentProperty.Equity.RemainingMortgage;
+            report.Equity = request.CurrentPropertySalePrice.Value - (currentProperty.Equity?.RemainingMortgage ?? 0);
         }
         if (request.PurchasePrice.HasValue)
         {
