@@ -1,13 +1,13 @@
-using ChrisUsher.MoveMate.API.Repositories;
 using ChrisUsher.MoveMate.API.Services.Accounts;
+using ChrisUsher.MoveMate.API.Services.Costs;
 using ChrisUsher.MoveMate.API.Services.Mortgages;
-using ChrisUsher.MoveMate.API.Services.Savings;
-using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.Reports;
+using ChrisUsher.MoveMate.API.Services.Repositories;
+using ChrisUsher.MoveMate.API.Services.Savings;
+using ChrisUsher.MoveMate.API.Services.StampDuty;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using ChrisUsher.MoveMate.API.Services.Costs;
 using Microsoft.Extensions.Azure;
 
 namespace ChrisUsher.MoveMate.API.Services
@@ -32,6 +32,7 @@ namespace ChrisUsher.MoveMate.API.Services
             services.AddSingleton<PropertyRepository>();
             services.AddSingleton<SavingsRepository>();
             services.AddSingleton<StockRepository>();
+            services.AddSingleton<MigrationsRepository>();
 
             #endregion
 
@@ -46,6 +47,7 @@ namespace ChrisUsher.MoveMate.API.Services
             services.AddSingleton<SavingsService>();
             services.AddSingleton<StampDutyService>();
             services.AddSingleton<StockService>();
+            services.AddSingleton<MigrationsService>();
         
             #endregion
 
