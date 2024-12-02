@@ -13,6 +13,8 @@ public class ReportSavingsAccount : SavingsAccount
 
         var reportSavingsAccount = JsonSerializer.Deserialize<ReportSavingsAccount>(savingsAccountJson, SharedCommon.JsonOptions);
 
+        reportSavingsAccount.SavingType = savingsAccount.SavingType;
+
         if (savingsAccount.Balances is not null)
         {
             if (savingsAccount.Balances.Count > 0)
