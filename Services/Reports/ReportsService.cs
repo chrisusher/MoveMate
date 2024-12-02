@@ -205,7 +205,7 @@ public class ReportsService
         return report;
     }
 
-    public async Task<SavingsReport> GetSavingReportAsync(Guid accountId, CaseType caseType, DateTime? futureDate)
+    public async Task<SavingsReport> GetSavingReportAsync(Guid accountId, CaseType caseType, DateTime futureDate)
     {
         var savings = await _savingsService.GetSavingsAccountsAsync(accountId);
 
