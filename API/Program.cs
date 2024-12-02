@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using Azure.Core.Serialization;
 using ChrisUsher.MoveMate.API.Services;
 using ChrisUsher.MoveMate.API.Services.Database;
+using ChrisUsher.MoveMate.Shared;
 
 var config = new ConfigurationBuilder()
 #if DEBUG
@@ -24,7 +25,7 @@ var host = new HostBuilder()
             WriteIndented = true
         };
 
-        worker.Serializer = new JsonObjectSerializer(ServicesCommon.JsonOptions);
+        worker.Serializer = new JsonObjectSerializer(SharedCommon.JsonOptions);
     })
     .ConfigureOpenApi()
     .ConfigureServices(services =>

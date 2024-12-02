@@ -7,6 +7,7 @@ using ChrisUsher.MoveMate.API.Services.Mortgages;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
+using ChrisUsher.MoveMate.Shared;
 using ChrisUsher.MoveMate.Shared.DTOs.Mortgages;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Reports;
@@ -62,7 +63,7 @@ public class ReportsService
         var currentProperty = await _propertyService.GetCurrentPropertyAsync(property.AccountId);
 
         var requestJson = JsonSerializer.Serialize(request);
-        var report = JsonSerializer.Deserialize<PropertyViabilityReport>(requestJson);
+        var report = JsonSerializer.Deserialize<PropertyViabilityReport>(requestJson, SharedCommon.JsonOptions);
 
         report.SaleDate = account.EstimatedSaleDate;
         report.Property = property;
@@ -144,7 +145,7 @@ public class ReportsService
 
             using (var stream = await blobClient.OpenReadAsync())
             {
-                return await JsonSerializer.DeserializeAsync<SavingsReport>(stream, ServicesCommon.JsonOptions);
+                return await JsonSerializer.DeserializeAsync<SavingsReport>(stream, SharedCommon.JsonOptions);
             }
         }
 
@@ -233,7 +234,7 @@ public class ReportsService
 
             using (var stream = await blobClient.OpenReadAsync())
             {
-                var reportEntry = await JsonSerializer.DeserializeAsync<SavingsReport>(stream, ServicesCommon.JsonOptions);
+                var reportEntry = await JsonSerializer.DeserializeAsync<SavingsReport>(stream, SharedCommon.JsonOptions);
 
                 // var fileName = blob.Name.Substring(blob.Name.LastIndexOf("/"));
                 var fileNameWithoutPath = Path.GetFileNameWithoutExtension(blob.Name);
@@ -373,7 +374,7 @@ public class ReportsService
     {
         using var stream = new MemoryStream();
 
-        await JsonSerializer.SerializeAsync(stream, objectToSerialise, ServicesCommon.JsonOptions);
+        await JsonSerializer.SerializeAsync(stream, objectToSerialise, SharedCommon.JsonOptions);
 
         stream.Position = 0;
         using var reader = new StreamReader(stream);
