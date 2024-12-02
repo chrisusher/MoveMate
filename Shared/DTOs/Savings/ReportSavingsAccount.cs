@@ -11,7 +11,7 @@ public class ReportSavingsAccount : SavingsAccount
     {
         var savingsAccountJson = JsonSerializer.Serialize(savingsAccount);
 
-        var reportSavingsAccount = JsonSerializer.Deserialize<ReportSavingsAccount>(savingsAccountJson);
+        var reportSavingsAccount = JsonSerializer.Deserialize<ReportSavingsAccount>(savingsAccountJson, SharedCommon.JsonOptions);
 
         if (savingsAccount.Balances is not null)
         {
