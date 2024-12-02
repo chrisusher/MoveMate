@@ -24,10 +24,12 @@ public class SavingsReportFunction : HttpFunction
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsReport))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "caseModel", In = ParameterLocation.Query, Required = true, Type = typeof(CaseType))]
+    [OpenApiParameter(name: "futureDate", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime?))]
     [Function("SavingsReportFunction")]
     public async Task<HttpResponseData> CreateReportAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Reports/SavingsReport/{accountId}")] HttpRequestData request,
         Guid accountId,
-        string caseModel)
+        string caseModel,
+        DateTime? futureDate)
     {
         HttpResponseData response;
 
@@ -41,9 +43,17 @@ public class SavingsReportFunction : HttpFunction
             }
 
             response = request.CreateResponse(HttpStatusCode.OK);
+            SavingsReport report;
 
-            var report = await _reportsService.GetSavingReportAsync(accountId, caseType);
-            
+            if (futureDate.HasValue)
+            {
+                report = await _reportsService.GetSavingReportAsync(accountId, caseType, futureDate.Value);
+            }
+            else
+            {
+                report = await _reportsService.GetSavingReportAsync(accountId, caseType);
+            }
+
             await response.WriteAsJsonAsync(report);
         }
         catch (DataNotFoundException dataNotFound)
