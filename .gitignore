@@ -406,4 +406,4 @@ local.settings.json
 
 *.lock.hcl
 
-Reports/
+/Reports/

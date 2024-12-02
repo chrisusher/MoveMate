@@ -205,6 +205,23 @@ public class ReportsService
         return report;
     }
 
+    public async Task<SavingsReport> GetSavingReportAsync(Guid accountId, CaseType caseType, DateTime? futureDate)
+    {
+        var savings = await _savingsService.GetSavingsAccountsAsync(accountId);
+
+        var report = new SavingsReport
+        {
+            FutureDate = futureDate,
+            CaseType = caseType,
+        };
+
+        report.Savings = CalculateSavings(savings, caseType, futureDate).Select(ReportSavingsAccount.FromSavingsAccount).ToList();
+
+        report.TotalSavings = report.Savings.Sum(x => x.CurrentBalance);
+
+        return report;
+    }
+
     public async Task<SavingsOverTimeReport> GetSavingsOverTimeReportAsync(Guid accountId)
     {
         var report = new SavingsOverTimeReport();
@@ -243,7 +260,7 @@ public class ReportsService
     public async Task<StockInvestmentReport> GetStockInvestmentReportAsync(Guid accountId, Guid savingsId)
     {
         var stockSavingsAccount = await _savingsService.GetSavingsAccountAsync(accountId, savingsId);
-        
+
         if (stockSavingsAccount == null)
         {
             throw new DataNotFoundException(message: "Savings account passed to StockInvestmentReport was not found.");
@@ -258,7 +275,7 @@ public class ReportsService
 
         var report = new StockInvestmentReport();
 
-        foreach(var stock in await stocksInAccountTask)
+        foreach (var stock in await stocksInAccountTask)
         {
             var lastBalance = stock.Balances.Last();
 
