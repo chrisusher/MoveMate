@@ -1,7 +1,6 @@
-using System.Net;
 using ChrisUsher.MoveMate.API.Services.Accounts;
 using ChrisUsher.MoveMate.Shared.DTOs.Accounts;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace ChrisUsher.MoveMate.API.Functions.Accounts
 {
@@ -19,6 +18,7 @@ namespace ChrisUsher.MoveMate.API.Functions.Accounts
         }
 
         [OpenApiOperation(operationId: "CreateAccount", tags: new[] { "Accounts" }, Summary = "")]
+        [OpenApiSecurity("Http", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header)]
         [OpenApiRequestBody("application/json", typeof(CreateAccountRequest))]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Account))]
         [Function("CreateAccount")]
@@ -46,6 +46,7 @@ namespace ChrisUsher.MoveMate.API.Functions.Accounts
         }
 
         [OpenApiOperation(operationId: "GetAccount", tags: new[] { "Accounts" }, Summary = "")]
+        [OpenApiSecurity("Http", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header)]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Account))]
         [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
         [Function("GetAccount")]
@@ -71,6 +72,7 @@ namespace ChrisUsher.MoveMate.API.Functions.Accounts
         }
 
         [OpenApiOperation(operationId: "UpdateAccount", tags: new[] { "Accounts" }, Summary = "")]
+        [OpenApiSecurity("Http", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header)]
         [OpenApiRequestBody("application/json", typeof(UpdateAccountRequest))]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Account))]
         [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
