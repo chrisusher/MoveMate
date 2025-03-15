@@ -1,9 +1,7 @@
-using System.Net;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.Reports;
 using ChrisUsher.MoveMate.Shared.DTOs.Reports;
-using ChrisUsher.MoveMate.Shared.Enums;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace ChrisUsher.MoveMate.API.Functions.Reports;
 
@@ -25,12 +23,13 @@ public class PropertyViabilityReportFunction : HttpFunction
     }
 
     [OpenApiOperation(operationId: "CreatePropertyViabilityReport", tags: new[] { "Reports" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiRequestBody("application/json", typeof(PropertyViabilityReportRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(PropertyViabilityReport))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "propertyId", In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
     [Function("CreatePropertyViabilityReport")]
-    public async Task<HttpResponseData> CalculateInterest([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Reports/PropertyViability/{accountId}/{propertyId}")] HttpRequestData request,
+    public async Task<HttpResponseData> CalculateInterest([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Reports/PropertyViability/{accountId}/{propertyId}")] HttpRequestData request,
         Guid accountId,
         Guid propertyId)
     {

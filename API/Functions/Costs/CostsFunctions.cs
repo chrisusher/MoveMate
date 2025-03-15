@@ -1,7 +1,6 @@
-﻿using System.Net;
-using ChrisUsher.MoveMate.API.Services.Costs;
+﻿using ChrisUsher.MoveMate.API.Services.Costs;
 using ChrisUsher.MoveMate.Shared.DTOs.Costs;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace ChrisUsher.MoveMate.API.Functions.Costs;
 
@@ -19,11 +18,12 @@ public class CostsFunctions
     }
     
     [OpenApiOperation(operationId: "CreateCost", tags: new[] { "Costs" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiRequestBody("application/json", typeof(CreateCostRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Cost))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("CreateCost")]
-    public async Task<HttpResponseData> CreateCost([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Costs")] HttpRequestData request,
+    public async Task<HttpResponseData> CreateCost([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Accounts/{accountId}/Costs")] HttpRequestData request,
         Guid accountId)
     {
         HttpResponseData response;
@@ -48,10 +48,11 @@ public class CostsFunctions
     }
     
     [OpenApiOperation(operationId: "GetCosts", tags: new[] { "Costs" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(List<Cost>))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetCosts")]
-    public async Task<HttpResponseData> GetCosts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Costs")] HttpRequestData request,
+    public async Task<HttpResponseData> GetCosts([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Accounts/{accountId}/Costs")] HttpRequestData request,
         Guid accountId)
     {
         HttpResponseData response;
@@ -72,11 +73,12 @@ public class CostsFunctions
     }
     
     [OpenApiOperation(operationId: "GetCost", tags: new[] { "Costs" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Cost))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "costId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetCost")]
-    public async Task<HttpResponseData> GetCost([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Costs/{costId}")] HttpRequestData request,
+    public async Task<HttpResponseData> GetCost([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Accounts/{accountId}/Costs/{costId}")] HttpRequestData request,
         Guid accountId,
         Guid costId)
     {
@@ -105,12 +107,13 @@ public class CostsFunctions
     }
 
     [OpenApiOperation(operationId: "UpdateCost", tags: new[] { "Costs" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiRequestBody("application/json", typeof(UpdateCostRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Cost))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "costId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("UpdateCost")]
-    public async Task<HttpResponseData> UpdateAccount([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}/Costs/{costId}")] HttpRequestData request,
+    public async Task<HttpResponseData> UpdateAccount([HttpTrigger(AuthorizationLevel.Function, "put", Route = "Accounts/{accountId}/Costs/{costId}")] HttpRequestData request,
         Guid accountId,
         Guid costId)
     {

@@ -1,9 +1,8 @@
-﻿using System.Net;
-using ChrisUsher.MoveMate.API.Services.Savings;
+﻿using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings.Stocks;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
-namespace ChrisUsher.MoveMate.API.Functions.Stock;
+namespace ChrisUsher.MoveMate.API.Functions.Savings;
 
 public class StockFunctions
 {
@@ -19,12 +18,13 @@ public class StockFunctions
     }
     
     [OpenApiOperation(operationId: "CreateStockAccount", tags: new[] { "Stocks" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiRequestBody("application/json", typeof(CreateStocksAndSharesRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(StocksAndSharesDetails))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("CreateStockAccount")]
-    public async Task<HttpResponseData> CreateStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks")] HttpRequestData request,
+    public async Task<HttpResponseData> CreateStockAccountAsync([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks")] HttpRequestData request,
         Guid accountId,
         Guid savingsId)
     {
@@ -57,11 +57,12 @@ public class StockFunctions
     }
     
     [OpenApiOperation(operationId: "GetStockAccounts", tags: new[] { "Stocks" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(List<StocksAndSharesDetails>))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetStockAccounts")]
-    public async Task<HttpResponseData> GetStockAccountsAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks")] HttpRequestData request,
+    public async Task<HttpResponseData> GetStockAccountsAsync([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks")] HttpRequestData request,
         Guid accountId,
         Guid savingsId)
     {
@@ -90,12 +91,13 @@ public class StockFunctions
     }
     
     [OpenApiOperation(operationId: "GetStockAccount", tags: new[] { "Stocks" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(StocksAndSharesDetails))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "stockId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("GetStockAccount")]
-    public async Task<HttpResponseData> GetStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}")] HttpRequestData request,
+    public async Task<HttpResponseData> GetStockAccountAsync([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         Guid stockId)
@@ -125,13 +127,14 @@ public class StockFunctions
     }
 
     [OpenApiOperation(operationId: "UpdateStockAccount", tags: new[] { "Stocks" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiRequestBody("application/json", typeof(UpdateStocksAndSharesRequest))]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(StocksAndSharesDetails))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "stockId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("UpdateStockAccount")]
-    public async Task<HttpResponseData> UpdateStockAccountAsync([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}")] HttpRequestData request,
+    public async Task<HttpResponseData> UpdateStockAccountAsync([HttpTrigger(AuthorizationLevel.Function, "put", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         Guid stockId)
@@ -165,6 +168,7 @@ public class StockFunctions
     }
 
     [OpenApiOperation(operationId: "AddStockBalance", tags: new[] { "Stocks" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(StocksAndSharesDetails))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
@@ -172,7 +176,7 @@ public class StockFunctions
     [OpenApiParameter(name: "currentBalance", In = ParameterLocation.Query, Required = true, Type = typeof(double))]
     [OpenApiParameter(name: "additionalInvestment", In = ParameterLocation.Query, Required = true, Type = typeof(double))]
     [Function("AddStockBalance")]
-    public async Task<HttpResponseData> AddStockBalanceAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}/Balance")] HttpRequestData request,
+    public async Task<HttpResponseData> AddStockBalanceAsync([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Stocks/{stockId}/Balance")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         Guid stockId,

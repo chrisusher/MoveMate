@@ -1,8 +1,7 @@
-using System.Net;
 using ChrisUsher.MoveMate.API.Services.Reports;
 using ChrisUsher.MoveMate.Shared.DTOs.Reports;
 using ChrisUsher.MoveMate.Shared.Enums;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace ChrisUsher.MoveMate.API.Functions.Reports;
 
@@ -21,12 +20,13 @@ public class SavingsReportFunction : HttpFunction
     }
 
     [OpenApiOperation(operationId: "SavingsReportFunction", tags: new[] { "Reports" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsReport))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "caseModel", In = ParameterLocation.Query, Required = true, Type = typeof(CaseType))]
     [OpenApiParameter(name: "futureDate", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime?))]
     [Function("SavingsReportFunction")]
-    public async Task<HttpResponseData> CreateReportAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Reports/SavingsReport/{accountId}")] HttpRequestData request,
+    public async Task<HttpResponseData> CreateReportAsync([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Reports/SavingsReport/{accountId}")] HttpRequestData request,
         Guid accountId,
         string caseModel,
         DateTime? futureDate)

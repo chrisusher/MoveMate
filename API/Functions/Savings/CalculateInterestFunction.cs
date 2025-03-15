@@ -1,8 +1,7 @@
-﻿using System.Net;
-using ChrisUsher.MoveMate.API.Services.Accounts;
+﻿using ChrisUsher.MoveMate.API.Services.Accounts;
 using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace ChrisUsher.MoveMate.API.Functions.Savings;
 
@@ -26,11 +25,12 @@ public class CalculateInterestFunction : HttpFunction
     }
     
     [OpenApiOperation(operationId: "CalculateInterest", tags: new[] { "Savings Calculations" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsInterestBreakdown))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [Function("CalculateInterest")]
-    public async Task<HttpResponseData> CalculateInterest([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/CalculateInterest")] HttpRequestData request,
+    public async Task<HttpResponseData> CalculateInterest([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/CalculateInterest")] HttpRequestData request,
         Guid accountId,
         Guid savingsId)
     {

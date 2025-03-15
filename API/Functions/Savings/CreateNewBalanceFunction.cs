@@ -1,7 +1,6 @@
-﻿using System.Net;
-using ChrisUsher.MoveMate.API.Services.Savings;
+﻿using ChrisUsher.MoveMate.API.Services.Savings;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace ChrisUsher.MoveMate.API.Functions.Savings;
 
@@ -19,12 +18,13 @@ public class CreateNewBalanceFunction : HttpFunction
     }
     
     [OpenApiOperation(operationId: "CreateNewBalance", tags: new[] { "Savings" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsAccount))]
     [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "savingsId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
     [OpenApiParameter(name: "balance", In = ParameterLocation.Query, Required = true, Type = typeof(double))]
     [Function("CreateNewBalance")]
-    public async Task<HttpResponseData> CreateNewBalance([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Balance")] HttpRequestData request,
+    public async Task<HttpResponseData> CreateNewBalance([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Accounts/{accountId}/Savings/{savingsId}/Balance")] HttpRequestData request,
         Guid accountId,
         Guid savingsId,
         double balance)

@@ -1,10 +1,9 @@
-using System.Net;
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
 using ChrisUsher.MoveMate.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace ChrisUsher.MoveMate.API.Functions.Properties
 {
@@ -25,13 +24,14 @@ namespace ChrisUsher.MoveMate.API.Functions.Properties
         }
 
         [OpenApiOperation(operationId: "CalculateStampDuty", tags: new[] { "Property Calculations" }, Summary = "Calculates the Stamp Duty for a Property")]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiRequestBody("application/json", typeof(StampDutyRequest))]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(StampDutyResponse))]
         [OpenApiParameter(name: "accountId", In = ParameterLocation.Path,  Required = true, Type = typeof(Guid))]
         [OpenApiParameter(name: "propertyId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
         [OpenApiParameter(name: "caseModel", In = ParameterLocation.Query, Required = false, Type = typeof(CaseType))]
         [Function("CalculateStampDuty")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts/{accountId}/Properties/{propertyId}/Calculations/StampDuty")] HttpRequestData request,
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Accounts/{accountId}/Properties/{propertyId}/Calculations/StampDuty")] HttpRequestData request,
             Guid accountId,
             Guid propertyId,
             [FromQuery] string caseModel)

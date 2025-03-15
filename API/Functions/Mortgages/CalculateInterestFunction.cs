@@ -1,7 +1,6 @@
-﻿using System.Net;
-using ChrisUsher.MoveMate.API.Services.Mortgages;
+﻿using ChrisUsher.MoveMate.API.Services.Mortgages;
 using ChrisUsher.MoveMate.Shared.DTOs.Savings;
-using Microsoft.OpenApi.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace ChrisUsher.MoveMate.API.Functions.Savings;
 
@@ -19,12 +18,13 @@ public class CalculateMortgagePaymentFunction : HttpFunction
     }
     
     [OpenApiOperation(operationId: "CalculateMortgagePayment", tags: new[] { "Property Calculations" }, Summary = "")]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(SavingsInterestBreakdown))]
     [OpenApiParameter(name: "loanAmount", In = ParameterLocation.Query, Required = true, Type = typeof(double))]
     [OpenApiParameter(name: "interestRate", In = ParameterLocation.Query, Required = true, Type = typeof(double))]
     [OpenApiParameter(name: "years", In = ParameterLocation.Query, Required = true, Type = typeof(int))]
     [Function("CalculateMortgagePayment")]
-    public async Task<HttpResponseData> CalculateInterest([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Mortgages/MonthlyPayments")] HttpRequestData request,
+    public async Task<HttpResponseData> CalculateInterest([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Mortgages/MonthlyPayments")] HttpRequestData request,
         double loanAmount,
         double interestRate,
         int years)
