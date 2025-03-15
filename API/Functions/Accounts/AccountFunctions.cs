@@ -22,7 +22,7 @@ namespace ChrisUsher.MoveMate.API.Functions.Accounts
         [OpenApiRequestBody("application/json", typeof(CreateAccountRequest))]
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Account))]
         [Function("CreateAccount")]
-        public async Task<HttpResponseData> CreateAccount([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Accounts")] HttpRequestData request)
+        public async Task<HttpResponseData> CreateAccount([HttpTrigger(AuthorizationLevel.Function, "post", Route = "Accounts")] HttpRequestData request)
         {
             HttpResponseData response;
 
@@ -50,7 +50,7 @@ namespace ChrisUsher.MoveMate.API.Functions.Accounts
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Account))]
         [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
         [Function("GetAccount")]
-        public async Task<HttpResponseData> GetAccount([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Accounts/{accountId}")] HttpRequestData request,
+        public async Task<HttpResponseData> GetAccount([HttpTrigger(AuthorizationLevel.Function, "get", Route = "Accounts/{accountId}")] HttpRequestData request,
             Guid accountId)
         {
             HttpResponseData response;
@@ -77,7 +77,7 @@ namespace ChrisUsher.MoveMate.API.Functions.Accounts
         [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json", typeof(Account))]
         [OpenApiParameter(name: "accountId", In = ParameterLocation.Path, Required = true, Type = typeof(Guid))]
         [Function("UpdateAccount")]
-        public async Task<HttpResponseData> UpdateAccount([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Accounts/{accountId}")] HttpRequestData request,
+        public async Task<HttpResponseData> UpdateAccount([HttpTrigger(AuthorizationLevel.Function, "put", Route = "Accounts/{accountId}")] HttpRequestData request,
             Guid accountId)
         {
             HttpResponseData response;
