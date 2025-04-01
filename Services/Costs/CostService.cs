@@ -2,7 +2,7 @@ using ChrisUsher.MoveMate.API.Services.Repositories;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.Shared.DTOs.Costs;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
-using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
+using ChrisUsher.MoveMate.Shared.DTOs.Properties.StampDuty;
 using ChrisUsher.MoveMate.Shared.Enums;
 
 namespace ChrisUsher.MoveMate.API.Services.Costs

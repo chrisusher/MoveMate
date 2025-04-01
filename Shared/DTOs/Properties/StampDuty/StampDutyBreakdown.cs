@@ -1,17 +1,16 @@
-namespace ChrisUsher.MoveMate.Shared.DTOs.StampDuty
+namespace ChrisUsher.MoveMate.Shared.DTOs.Properties.StampDuty;
+
+public class StampDutyBreakdown
 {
-    public class StampDutyBreakdown
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
-        [JsonPropertyName("percentage")]
-        public double Percentage { get; set; }
+    [JsonPropertyName("percentage")]
+    public double Percentage { get; set; }
 
-        [JsonPropertyName("amount")]
-        public double Amount { get; set; }
+    [JsonPropertyName("amount")]
+    public double Amount { get; set; }
 
-        [JsonPropertyName("taxDue")]
-        public double TaxDue { get; set; }
-    }
+    [JsonPropertyName("taxDue")]
+    public double TaxDue { get; set; }
 }

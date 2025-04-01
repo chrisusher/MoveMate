@@ -1,6 +1,6 @@
 using ChrisUsher.MoveMate.API.Services.Properties;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
-using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
+using ChrisUsher.MoveMate.Shared.DTOs.Properties.StampDuty;
 using ChrisUsher.MoveMate.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
-using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
+using ChrisUsher.MoveMate.Shared.DTOs.Properties.StampDuty;
 using ChrisUsher.MoveMate.Shared.Enums;
 using MongoDB.Bson;
 
