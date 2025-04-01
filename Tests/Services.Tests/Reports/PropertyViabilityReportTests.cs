@@ -2,7 +2,7 @@ using ChrisUsher.MoveMate.API.Services.Reports;
 using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using ChrisUsher.MoveMate.Shared.DTOs.Reports;
-using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
+using ChrisUsher.MoveMate.Shared.DTOs.Properties.StampDuty;
 
 namespace Services.Tests.Reports
 {

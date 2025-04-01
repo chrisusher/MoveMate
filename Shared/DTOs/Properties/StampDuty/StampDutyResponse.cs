@@ -1,17 +1,16 @@
-namespace ChrisUsher.MoveMate.Shared.DTOs.StampDuty
+namespace ChrisUsher.MoveMate.Shared.DTOs.Properties.StampDuty;
+
+public class StampDutyResponse
 {
-    public class StampDutyResponse
-    {
-        [JsonPropertyName("calculationDate")]
-        public DateTime CalculationDate => DateTime.UtcNow;
+    [JsonPropertyName("calculationDate")]
+    public DateTime CalculationDate => DateTime.UtcNow;
 
-        [JsonPropertyName("purchasePrice")]
-        public double PurchasePrice { get; set; }
+    [JsonPropertyName("purchasePrice")]
+    public double PurchasePrice { get; set; }
 
-        [JsonPropertyName("stampDuty")]
-        public double Amount => Math.Round(Breakdown.Sum(x => x.TaxDue), 2);
+    [JsonPropertyName("stampDuty")]
+    public double Amount => Math.Round(Breakdown.Sum(x => x.TaxDue), 2);
 
-        [JsonPropertyName("breakdown")]
-        public List<StampDutyBreakdown> Breakdown { get; set; } = new List<StampDutyBreakdown>();
-    }
+    [JsonPropertyName("breakdown")]
+    public List<StampDutyBreakdown> Breakdown { get; set; } = new List<StampDutyBreakdown>();
 }
