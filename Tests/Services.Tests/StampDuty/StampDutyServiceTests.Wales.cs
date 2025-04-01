@@ -1,6 +1,6 @@
 using ChrisUsher.MoveMate.API.Services.StampDuty;
 using ChrisUsher.MoveMate.Shared.DTOs.Properties;
-using ChrisUsher.MoveMate.Shared.DTOs.StampDuty;
+using ChrisUsher.MoveMate.Shared.DTOs.Properties.StampDuty;
 
 namespace Services.Tests.StampDuty
 {
@@ -56,7 +56,7 @@ namespace Services.Tests.StampDuty
             Assert.That(stampDuty.Amount, Is.EqualTo(expectedStampDuty), "Stamp Duty calculated was not as expected.");
         }
 
-        [TestCase(429000, 29285)]
+        [TestCase(429000, 33_575)]
         [Test]
         public void CalculateStampDuty_HigherTax_CalculatesCorrectAmount(double purchasePrice, double expectedStampDuty)
         {
