@@ -310,6 +310,7 @@ public class ReportsService
             {
                 CashRequired = currentSavingAmount,
                 MonthlyPayment = _mortgagePaymentService.CalculateMonthlyMortgagePayment(purchasePrice - deposit, interestRate, years),
+                MortgageRequired = purchasePrice - deposit,
                 TotalDeposit = deposit
             });
 
