@@ -1,14 +1,16 @@
-namespace ChrisUsher.MoveMate.Shared.DTOs.Mortgages
+namespace ChrisUsher.MoveMate.Shared.DTOs.Mortgages;
+
+public class MonthlyMortgagePayment
 {
-    public class MonthlyMortgagePayment
-    {
-        [JsonPropertyName("monthlyPayment")]
-        public double MonthlyPayment { get; set; }
+    [JsonPropertyName("monthlyPayment")]
+    public double MonthlyPayment { get; set; }
 
-        [JsonPropertyName("totalDeposit")]
-        public double TotalDeposit { get; set; }
+    [JsonPropertyName("totalDeposit")]
+    public double TotalDeposit { get; set; }
 
-        [JsonPropertyName("cashRequired")]
-        public double CashRequired { get; set; }
-    }
+    [JsonPropertyName("cashRequired")]
+    public double CashRequired { get; set; }
+
+    [JsonPropertyName("mortgageRequired")]
+    public double MortgageRequired { get; set; }
 }
