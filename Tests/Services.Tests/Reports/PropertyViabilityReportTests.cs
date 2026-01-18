@@ -30,7 +30,7 @@ public class PropertyViabilityReportTests
         await _savingsService.CreateSavingsAccountAsync(ServiceTestsCommon.DefaultAccount.AccountId, new()
         {
             Name = "Test Savings",
-            InitialBalance = 15000,
+            InitialBalance = 55_000,
             SavingsRate = 3.0,
             SavingType = SavingType.ISA,
         });
@@ -39,8 +39,10 @@ public class PropertyViabilityReportTests
         var request = new PropertyViabilityReportRequest
         {
             CaseType = CaseType.BestCase,
-            CurrentPropertySalePrice = 0,
+            CurrentPropertySalePrice = 200_000,
             PurchasePrice = purchasePrice,
+            InterestRate = 4.1,
+            Years = 25,
         };
         _property = new Property
         {
@@ -77,5 +79,15 @@ public class PropertyViabilityReportTests
         var firstMortgagePayment = _viabilityReport.MonthlyMortgagePayments.First();
 
         Assert.That(firstMortgagePayment.MortgageRequired, Is.GreaterThan(0), "MortgageRequired is not set on MonthlyMortgagePayment.");
+    }
+
+    [Test]
+    public async Task GetPropertyViabilityReportAsync_MortgagePayments_MortgageRequired_IsDivisableBy10000()
+    {
+        Assert.That(_viabilityReport.MonthlyMortgagePayments, Has.Count.GreaterThanOrEqualTo(1), "No mortgage payments found on Property Viability Report.");
+
+        var mortgagePayment = _viabilityReport.MonthlyMortgagePayments[1];
+
+        Assert.That(mortgagePayment.MortgageRequired % 10000, Is.EqualTo(0), "MortgageRequired is not divisable by £10,000 on MonthlyMortgagePayment.");
     }
 }

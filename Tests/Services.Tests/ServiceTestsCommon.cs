@@ -9,123 +9,122 @@ using ChrisUsher.MoveMate.Shared.DTOs.Properties;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Services.Tests
+namespace Services.Tests;
+
+public static class ServiceTestsCommon
 {
-    public static class ServiceTestsCommon
+    private static Faker _faker;
+    private static Account _account;
+    private static Property _currentProperty;
+    private static Property _purchaseProperty;
+    private static ServiceProvider _services;
+
+    public static IConfigurationRoot Configuration { get; internal set; }
+
+    public static Account DefaultAccount
     {
-        private static Faker _faker;
-        private static Account _account;
-        private static Property _currentProperty;
-        private static Property _purchaseProperty;
-        private static ServiceProvider _services;
-
-        public static IConfigurationRoot Configuration { get; internal set; }
-
-        public static Account DefaultAccount
+        get
         {
-            get
+            if (_account == null)
             {
-                if (_account == null)
-                {
-                    _account = Services.GetService<AccountService>()
-                        .CreateAccountAsync(new()
+                _account = Services.GetService<AccountService>()
+                    .CreateAccountAsync(new()
+                    {
+                        Email = Faker.Internet.Email()
+                    }).Result;
+            }
+            return _account;
+        }
+    }
+
+    public static Property DefaultCurrentProperty
+    {
+        get
+        {
+            if (_currentProperty == null)
+            {
+                _currentProperty = Services.GetService<PropertyService>()
+                    .CreatePropertyAsync(DefaultAccount.AccountId, new()
+                    {
+                        PropertyType = PropertyType.Current,
+                        Name = "Our House",
+                        MaxValue = 300_000,
+                        MinValue = 275_000,
+                        Equity = new()
                         {
-                            Email = Faker.Internet.Email()
-                        }).Result;
-                }
-                return _account;
+                            RemainingMortgage = 71_500,
+                            Updated = DateTime.UtcNow
+                        }
+                    }).Result;
             }
+            return _currentProperty;
         }
+    }
 
-        public static Property DefaultCurrentProperty
+    public static Property DefaultPurchaseProperty
+    {
+        get
         {
-            get
+            if (_purchaseProperty == null)
             {
-                if (_currentProperty == null)
-                {
-                    _currentProperty = Services.GetService<PropertyService>()
-                        .CreatePropertyAsync(DefaultAccount.AccountId, new()
-                        {
-                            PropertyType = PropertyType.Current,
-                            Name = "Our House",
-                            MaxValue = 300_000,
-                            MinValue = 275_000,
-                            Equity = new()
-                            {
-                                RemainingMortgage = 100_000,
-                                Updated = DateTime.UtcNow
-                            }
-                        }).Result;
-                }
-                return _currentProperty;
+                _purchaseProperty = Services.GetService<PropertyService>()
+                    .GetPropertiesAsync(DefaultAccount.AccountId, PropertyType.ToPurchase)
+                    .Result
+                    .First();
             }
+            return _purchaseProperty;
         }
+    }
 
-        public static Property DefaultPurchaseProperty
+    public static Faker Faker
+    {
+        get
         {
-            get
+            if (_faker == null)
             {
-                if (_purchaseProperty == null)
-                {
-                    _purchaseProperty = Services.GetService<PropertyService>()
-                        .GetPropertiesAsync(DefaultAccount.AccountId, PropertyType.ToPurchase)
-                        .Result
-                        .First();
-                }
-                return _purchaseProperty;
+                _faker = new Faker();
             }
+            return _faker;
         }
+    }
 
-        public static Faker Faker
+    public static ServiceProvider Services
+    {
+        get
         {
-            get
+            if (_services == null)
             {
-                if (_faker == null)
-                {
-                    _faker = new Faker();
-                }
-                return _faker;
+                _services = RegisterServicesAsync().Result;
             }
+            return _services;
         }
+    }
 
-        public static ServiceProvider Services
+    private static async Task<ServiceProvider> RegisterServicesAsync()
+    {
+        var services = new ServiceCollection();
+
+        services.AddDbContext<DatabaseContext>(options =>
         {
-            get
-            {
-                if (_services == null)
-                {
-                    _services = RegisterServicesAsync().Result;
-                }
-                return _services;
-            }
-        }
+            options.UseMongoDB(Configuration.GetConnectionString("Database"), "movemate-test");
 
-        private static async Task<ServiceProvider> RegisterServicesAsync()
-        {
-            var services = new ServiceCollection();
-
-            services.AddDbContext<DatabaseContext>(options =>
-            {
-                options.UseMongoDB(Configuration.GetConnectionString("Database"), "movemate-test");
-
-                options.EnableSensitiveDataLogging();
+            options.EnableSensitiveDataLogging();
 
 #if DEBUG
 
-                options.EnableDetailedErrors();
-                options.LogTo(Console.WriteLine);
+            options.EnableDetailedErrors();
+            options.LogTo(Console.WriteLine);
 
 #endif
-            });
+        });
 
-            services.AddMoveMateServices(Configuration);
+        services.AddMoveMateServices(Configuration);
 
-            var serviceCollection = services.BuildServiceProvider();
+        var serviceCollection = services.BuildServiceProvider();
 
-            var blobServiceClient = serviceCollection.GetRequiredService<BlobServiceClient>();
-            await blobServiceClient.CreateBlobContainerAsync("outputcache");
+        var blobServiceClient = serviceCollection.GetRequiredService<BlobServiceClient>();
+        await blobServiceClient.CreateBlobContainerAsync("outputcache");
 
-            return serviceCollection;
-        }
+        return serviceCollection;
     }
 }
