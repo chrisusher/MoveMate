@@ -304,8 +304,7 @@ public class ReportsService
 
         // Base case, no savings used
         var mortgageRequired = purchasePrice - equity;
-        var cashUsed = 0.0;
-
+        
         monthlyPayments.Add(new MonthlyMortgagePayment
         {
             CashRequired = 0,
@@ -316,7 +315,7 @@ public class ReportsService
 
         // Round mortgage required to nearest £10,000
         mortgageRequired = Math.Ceiling(mortgageRequired / 10000) * 10000;
-        cashUsed = purchasePrice - equity - mortgageRequired;
+        var cashUsed = purchasePrice - equity - mortgageRequired;
 
         if (cashUsed < totalSavings && cashUsed > 0)
         {
@@ -352,26 +351,6 @@ public class ReportsService
                 TotalDeposit = equity + cashUsed
             });
         }
-
-        // for (var currentSavingAmount = 0; currentSavingAmount <= totalSavings; currentSavingAmount += 10000)
-        // {
-        //     var deposit = equity + currentSavingAmount;
-        //     var mortgageRequired = purchasePrice - deposit;
-
-        //     // Ensure MortgageRequired is not negative
-        //     if (mortgageRequired < 0)
-        //     {
-        //         break;
-        //     }
-
-        //     monthlyPayments.Add(new MonthlyMortgagePayment
-        //     {
-        //         CashRequired = currentSavingAmount,
-        //         MonthlyPayment = _mortgagePaymentService.CalculateMonthlyMortgagePayment(mortgageRequired, interestRate, years),
-        //         MortgageRequired = mortgageRequired,
-        //         TotalDeposit = deposit
-        //     });
-        // }
 
         return monthlyPayments;
     }
