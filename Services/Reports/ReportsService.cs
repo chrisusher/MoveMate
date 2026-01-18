@@ -300,21 +300,56 @@ public class ReportsService
     {
         var monthlyPayments = new List<MonthlyMortgagePayment>();
 
-        var currentSavingAmount = 0;
+        // Start from MortgageRequired = purchasePrice and iterate down to 0 using all cash available
 
-        while (currentSavingAmount < totalSavings)
+        // Base case, no savings used
+        var mortgageRequired = purchasePrice - equity;
+        
+        monthlyPayments.Add(new MonthlyMortgagePayment
         {
-            var deposit = equity + currentSavingAmount;
+            CashRequired = 0,
+            MonthlyPayment = _mortgagePaymentService.CalculateMonthlyMortgagePayment(mortgageRequired, interestRate, years),
+            MortgageRequired = mortgageRequired,
+            TotalDeposit = equity
+        });
+
+        // Round mortgage required to nearest £10,000
+        mortgageRequired = Math.Ceiling(mortgageRequired / 10000) * 10000;
+        var cashUsed = purchasePrice - equity - mortgageRequired;
+
+        if (cashUsed < totalSavings && cashUsed > 0)
+        {
+            monthlyPayments.Add(new MonthlyMortgagePayment
+            {
+                CashRequired = cashUsed,
+                MonthlyPayment = _mortgagePaymentService.CalculateMonthlyMortgagePayment(mortgageRequired, interestRate, years),
+                MortgageRequired = mortgageRequired,
+                TotalDeposit = equity + cashUsed
+            });
+        }
+
+        while (cashUsed <= totalSavings)
+        {
+            mortgageRequired -= 10000;
+            cashUsed = purchasePrice - equity - mortgageRequired;
+
+            if (mortgageRequired < 0)
+            {
+                break;
+            }
+
+            if (cashUsed > totalSavings)
+            {
+                break;
+            }
 
             monthlyPayments.Add(new MonthlyMortgagePayment
             {
-                CashRequired = currentSavingAmount,
-                MonthlyPayment = _mortgagePaymentService.CalculateMonthlyMortgagePayment(purchasePrice - deposit, interestRate, years),
-                MortgageRequired = purchasePrice - deposit,
-                TotalDeposit = deposit
+                CashRequired = cashUsed,
+                MonthlyPayment = _mortgagePaymentService.CalculateMonthlyMortgagePayment(mortgageRequired, interestRate, years),
+                MortgageRequired = mortgageRequired,
+                TotalDeposit = equity + cashUsed
             });
-
-            currentSavingAmount += 10000;
         }
 
         return monthlyPayments;
